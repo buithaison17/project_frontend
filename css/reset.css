@@ -98,11 +98,6 @@ table{
     border-radius: 8px;
 }
 
-.input-add:focus{
-    border: 1px solid #DC3545;
-    outline: none;
-}
-
 #description-add-project-input{
     width: 432px;
     height: 80px;

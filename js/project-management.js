@@ -75,15 +75,22 @@ modalAddProject.addEventListener('click', function(event){
 })
 
 // Bấm lưu và tiến hành thêm project
-btnAddSaveElement.addEventListener('click', function(){
+function addProject(){
+    const myListProject = projects.filter(project => 
+        project.member.some(member => member.userId === currentUserId)
+    ); 
+
     if(inputNameProjectElement.value === ''){
-        alerNameProjectElement.textContent = 'Tên dự án không được để trống'
+        alerNameProjectElement.textContent = 'Tên dự án không được để trống';
+    }
+    else if(myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase())){
+        alerNameProjectElement.textContent = 'Dự án đã tồn tại';
     }
     else{
         alerNameProjectElement.textContent = '';
     }
 
-    if(inputNameProjectElement.value !== ''){
+    if(inputNameProjectElement.value !== '' && !myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase())){
         const newProject = {
             id: projects.length+1,
             projectName: inputNameProjectElement.value.trim(),
@@ -103,7 +110,9 @@ btnAddSaveElement.addEventListener('click', function(){
         modalAddProject.style.display = 'none';
         getListProject();        
     }
-})
+}
+
+btnAddSaveElement.addEventListener('click', addProject);
 
 // Tiến hành đăng xuất tài khoản
 btnLogoutElement.addEventListener('click', function(){
@@ -177,6 +186,50 @@ function removeProject(index, page) {
     };
 }
 
+// Hàm chỉnh sửa thông tin dự án
+function editProject(index, page) {
+    modalAddProject.style.display = 'flex';
+
+    const projectId = pagesProject[page][index].id;
+    const projectIndex = projects.findIndex(proj => proj.id === projectId);    
+
+    inputNameProjectElement.value = projects[projectIndex].projectName;
+    inputDescriptionProjectElement.value = projects[projectIndex].description;
+
+    btnCloseModal.onclick = function() {
+        modalDeleteElement.style.display = 'none';
+    };
+
+    btnAddCancelElement.onclick = function() {
+        modalDeleteElement.style.display = 'none';
+    };
+
+    btnAddSaveElement.removeEventListener('click', addProject);
+
+    btnAddSaveElement.addEventListener('click', function(){
+        if(inputNameProjectElement.value === ''){
+            alerNameProjectElement.textContent = 'Tên dự án không được để trống';
+            return;
+        }
+        
+        if (projects.some(proj => 
+            proj.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase() &&
+            proj.id !== projects[projectIndex].id)) {
+             alerNameProjectElement.textContent = 'Tên dự án đã tồn tại';
+            return;
+        }
+        
+        modalAddProject.style.display = 'none';
+        projects[projectIndex].projectName = inputNameProjectElement.value;
+        projects[projectIndex].description = inputDescriptionProjectElement.value;
+        alerNameProjectElement.textContent = '';
+        inputNameProjectElement.value = '';
+        inputDescriptionProjectElement.value = '';
+        localStorage.setItem('projects', JSON.stringify(projects));
+        getListProject();
+    })
+
+}
 // Hàm phân chia danh sách project
 function createPageProject(myListProject){
     pagesProject = [];
