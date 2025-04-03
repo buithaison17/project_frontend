@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Managemnt</title>
+    <link rel="stylesheet" href="../css/detail-project-management.css">
+    <link rel="stylesheet" href="../css/reset.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-container">
+                <div class="header-left hover">Quản Lí Dự Án</div>
+                <div class="header-right">
+                    <div id="projects" class="projects">Dự Án</div>
+                    <div id="my-task" class="my-task">Nhiệm Vụ của tôi</div>
+                    <div id="logout" class="logout">Đăng Xuất</div>
+                </div>
+            </div>
+        </header>
+        <aside class="introduce-and-add-member">
+            <div class="left">
+                <h2 id="project-name"></h2>
+                <p id="project-content"></p>
+            </div>
+            <div class="right">
+                <div class="add-member">
+                    <h3>Thành viên</h3>
+                    <button id="btn-add-member" class="btn-add-member">+ Thêm thành viên</button>
+                </div>
+                <div class="view-member">
+                    <div class="member">
+                        <div class="avatar-member">
+                            <p>AN</p>
+                        </div>
+                        <div class="infor-member">
+                            <p class="name-member">An Nguyễn</p>
+                            <p class="position-member">Project owner</p>
+                        </div>
+                    </div>
+                    <div class="member">
+                        <div class="avatar-member">
+                            <p>AN</p>
+                        </div>
+                        <div class="infor-member">
+                            <p class="name-member">An Nguyễn</p>
+                            <p class="position-member">Project owner</p>
+                        </div>
+                    </div>
+                    <div class="view-all-member">...</div>
+                </div>
+            </div>            
+        </aside>
+        <aside class="feature">
+            <div class="left">
+                <div id="btn-add-task" class="btn-add-task">+ Thêm nhiệm vụ</div>
+            </div>
+            <div class="right">
+                <select class="sort" id="sort">
+                    <option value="">Sắp xếp theo</option>
+                    <option value="">Sắp xếp theo</option>
+                    <option value="">Sắp xếp theo</option>
+                </select>
+                <input type="text" class="search-task" id="search-task" placeholder="Tìm kiếm nhiệm vụ">
+            </div>
+        </aside>
+        <aside class="list-task-container">
+            <h3>Danh sách nhiệm vụ</h3>
+            <table class="list-task">
+                <thead>
+                    <tr>
+                        <td class="border">Tên nhiệm vụ</td>
+                        <td class="border">Người phụ trách</td>
+                        <td class="border">Ưu tiên</td>
+                        <td class="border">Ngày bắt đầu</td>
+                        <td class="border">Hạn chót</td>
+                        <td class="border" >Tiến độ</td>
+                        <td class="border">Hành động</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="detail" id="to-do">
+                            <ion-icon name="caret-forward"></ion-icon>
+                            <p class="name">To Do</p>
+                        </td>
+                    </tr>
+                    <tr class="list">
+                        <td class="name-task border">Soạn thảo đề cương</td>
+                        <td class="person-in-charge border">Son bui</td>
+                        <td class="border"><p class="high">Cao</p></td>
+                        <td class="date border">02 - 24</td>
+                        <td class="date border">02 - 27</td>
+                        <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
+                        <td class="border btn">
+                            <span class="btn-edit">Sửa</span>
+                            <span class="btn-remove">Xóa</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </aside>
+        <footer>&copy; 2025 Team management. All rights reverved.</footer>
+    </div>
+    <div id="modal-add-task-container" class="modal-add-task-container">
+        <div class="main-modal">
+            <div class="modal-head">
+                <h2>Thêm/ sửa nhiệm vụ</h2>
+                <ion-icon id="close-add-modal" class="icon" name="close-outline"></ion-icon>
+            </div>
+            <div class="modal-body">
+                <label for="name-task-input" class="name-label mt">Tên nhiệm vụ</label>
+                <input type="text" class="input" id="name-task-input">
+                <label class="name-label" for="person-in-charge-input">Người phụ trách</label>
+                <select class="input" id="person-in-charge-input">
+                    <option value=""></option>
+                </select>
+                <label class="name-label" for="status-input">Trạng thái</label>
+                <select class="input" id="status-input">
+                    <option value=""></option>
+                </select>
+                <label class="name-label" for="on-date-input">Ngày bắt đầu</label>
+                <input type="date" class="input">
+                <label class="name-label" for="late-date">Hạn cuối</label>
+                <input type="date" class="input">
+                <label for="priority-input" class="name-label">Độ ưu tiên</label>
+                <select id="priority-input" class="input">
+                    <option value="">Thấp</option>
+                    <option value="">Trung bình</option>
+                    <option value="">Cao</option>
+                </select>
+                <label for="progress-input" class="name-label">Tiến độ</label>
+                <select id="progress-input" class="input">
+                    <option value="">Chọn tiến độ</option>
+                    <option value="">Chọn tiến độ</option>
+                    <option value="">Chọn tiến độ</option>
+                    <option value="">Chọn tiến độ</option>
+                </select>
+            </div>
+            <div class="modal-foot">
+                <button id="btn-add-close" class="btn-cancel">Hủy</button>
+                <button class="btn-save">Lưu</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons.js"></script>
+    <script src="../js/detail-project-management.js"></script>
+</body>
+</html>

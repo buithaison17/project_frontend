@@ -1,0 +1,78 @@
+.form-container{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+}
+
+.form{
+    width: 533px;
+    height: 484px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.label-input{
+    display: inline-block;
+    margin-left: 38px;
+    font-size: 18px;
+    line-height: 30px;
+    font-weight: 400;
+}
+
+.alert{
+    color: red;
+    margin: 10px 0;
+    margin-left: 38px;
+}
+
+
+.btn:hover{
+    cursor: pointer;
+    background-color: #2a7fff;
+}
+
+.css-input{
+    margin-left: 38px;
+    margin-right: 22px;
+    text-align: center;
+    padding: 16px;
+    border: 1px solid #E4E4E7;
+    border-radius: 9px;
+    width: 472px;
+    height: 65px;
+}
+
+.btn{
+    width: 472px;
+    height: 65px;
+    margin: 63px 23px 30px 38px;
+    border-radius: 9px;
+    padding: 16px;
+    background-color: #0D6EFD;
+    color: white;
+    border-style: none;
+    transition: all 0.2s linear;
+}
+
+.next-to{
+    margin: 0 37px 30px 52px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: center;
+    color: #71717A;
+}
+
+.next-to:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+span{
+    font-weight: 600;
+    line-height: 22px;
+    color: #0D6EFD;
+}

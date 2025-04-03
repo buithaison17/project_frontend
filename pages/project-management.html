@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Dự Án</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/project-management.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-container">
+                <div class="header-left hover">Quản Lí Dự Án</div>
+                <div class="header-right">
+                    <div class="header-hover" id="projects">Dự Án</div>
+                    <div class="header-hover" id="my-task">Nhiệm Vụ của tôi</div>
+                    <div class="header-hover" id="logout">Đăng Xuất</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="team-management">
+            <h1 class="title-page">Quản Lí Dự Án</h1>
+            <div class="feature">
+                <div class="btn-add-project" id="btn-add-project">+ Thêm dự án</div>
+                <input type="text" id="search-project" class="search-project" placeholder="Tìm kiếm dự án">
+            </div>
+            <div class="list-task-container">
+                <h2>Danh Sách Dự Án</h2>
+                <table class="list-task">
+                    <thead>
+                        <tr>
+                            <td class="id">ID</td>
+                            <td class="name-project">Tên dự án</td>
+                            <td colspan="3" class="action">Hành động</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- <tr>
+                            <td class="id">1</td>
+                            <td class="name-project">Xây dựng website thương mại điện tử</td>
+                            <td colspan="3" class="action">
+                                <span class="btn-edit">Sửa</span>
+                                <span class="btn-remove">Xóa</span>
+                                <span class="btn-detail">Chi tiết</span>
+                            </td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="next-page">
+            <ion-icon class="btn-prev disable" id="btn-prev" name="chevron-back-outline"></ion-icon>
+            <div class="page-number" id="page-number">
+                <div class="active">1</div>
+                <div>2</div>
+                
+            </div>
+            <ion-icon class="btn-next" id="btn-next" name="chevron-forward-outline"></ion-icon>
+        </div>
+
+        <footer>&copy; 2025 Team management. All rights reverved.</footer>
+    </div>
+
+    <div class="modal-add-project" id="modal-add-project">
+        <div class="main-modal" id="main-modal-add">
+            <div class="modal-head">
+                <h2>Thêm/ sửa dự án</h2>
+                <ion-icon class="close-modal" id="close-modal" name="close-outline"></ion-icon>
+            </div>
+            <form class="form-add-project">
+                <label for="name-add-project-input" class="label-add">Tên dự án</label>
+                <input type="text" class="input-add" id="name-add-project-input">
+                <p id="alert-name-project"></p>
+                <label for="description-add-project-input" class="label-add">Mô tả dự án</label>
+                <textarea class="input-add" id="description-add-project-input"></textarea>
+            </form>
+            <div class="btn-modal">
+                <div class="btn-cancel" id="btn-add-cancel">Hủy</div>
+                <div class="btn-save" id="btn-add-save">Lưu</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-delete" class="modal-delete">
+        <div class="main-modal">
+            <div class="modal-head">
+                <h2>Xác nhận xóa dự án</h2>
+                <ion-icon id="close-remove-modal" class="close-modal" name="close-outline"></ion-icon>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa dự án này?</p>
+            </div>
+            <div class="modal-foot">
+                <button id="btn-remove-cancel" class="btn-cancel" id="btn-remove-cancel">Hủy</button>
+                <button id="btn-remove-confirm" class="btn-confirm">Xóa</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/project-management.js"></script>
+</body>
+</html>

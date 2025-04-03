@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management - Register</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="../css/base.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Đăng ký</h1>
+            <form class="form register-form" id="register-form">
+                <input type="text" id="name-register-input" class="input" placeholder="Họ và tên">
+                <p class="alert" id="alert-name"></p>
+                <input type="email" id="email-register-input" class="input" placeholder="Email">
+                <p class="alert" id="alert-email"></p>
+                <input type="password" id="password-register-input" class="input" placeholder="Mật khẩu">
+                <p class="alert" id="alert-password"></p>
+                <input type="password" id="confirm-password-register-input" class="input" placeholder="Xác nhận mật khẩu">
+                <p class="alert" id="alert-confirm-password"></p>
+                <button type="submit" id="btn-register" class="btn">Đăng kí</button>
+                <div class="next-to" id="btn-login">Đã có tài khoản? <span>Đăng nhập</span></div>
+            </form>
+        </div>
+    </div>
+    <script src="../js/register.js"></script>
+</body>
+</html>
