@@ -37,23 +37,20 @@ table{
     width: 100vw;
     height: 100vh;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-add-project .main-modal{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 480px;
     height: 378px;
     border-radius: 8px;
     background-color: #FFFFFF;
-    /* display: flex; */
-    /* flex-direction: column  ; */
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    animation: scale-up-center 0.2s ease-out forwards;
 }  
 
 .main-modal .modal-head{
@@ -160,3 +157,5 @@ table{
     cursor: pointer;
     background-color: #88939c;
 }
+
+@-webkit-keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}

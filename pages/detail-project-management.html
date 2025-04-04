@@ -103,7 +103,8 @@
         </aside>
         <footer>&copy; 2025 Team management. All rights reverved.</footer>
     </div>
-    <div id="modal-add-task-container" class="modal-add-task-container">
+
+    <div style="display: none;" id="modal-add-task-container" class="modal-container">
         <div class="main-modal">
             <div class="modal-head">
                 <h2>Thêm/ sửa nhiệm vụ</h2>
@@ -114,7 +115,7 @@
                 <input type="text" class="input" id="name-task-input">
                 <label class="name-label" for="person-in-charge-input">Người phụ trách</label>
                 <select class="input" id="person-in-charge-input">
-                    <option value=""></option>
+                    <option value="">Người phụ trách</option>
                 </select>
                 <label class="name-label" for="status-input">Trạng thái</label>
                 <select class="input" id="status-input">
@@ -133,9 +134,9 @@
                 <label for="progress-input" class="name-label">Tiến độ</label>
                 <select id="progress-input" class="input">
                     <option value="">Chọn tiến độ</option>
-                    <option value="">Chọn tiến độ</option>
-                    <option value="">Chọn tiến độ</option>
-                    <option value="">Chọn tiến độ</option>
+                    <option value="">Đúng tiến độ</option>
+                    <option value="">Rủi ro cao</option>
+                    <option value="">Trễ hạn</option>
                 </select>
             </div>
             <div class="modal-foot">
@@ -144,6 +145,47 @@
             </div>
         </div>
     </div>
+
+    <div style="display: none;" id="modal-add-member" class="modal-container">
+        <div class="main-modal">
+            <div class="modal-head">
+                <h2>Thêm thành viên</h2>
+                <ion-icon id="close-add-member-modal" class="icon" name="close-outline"></ion-icon>
+            </div>
+            <div class="modal-body">
+                <label for="email-user-invite">Email</label>
+                <input type="email" id="email-user-invite" class="input">
+                <label for="position-user-invite" class="mt">Vai trò</label>
+                <select id="position-user-invite" class="input">
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                </select>
+                <br>
+            </div>
+            <div class="modal-foot">
+                <button class="btn-cancel">Hủy</button>
+                <button class="btn-save">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: none;" id="modal-delete" class="modal-container">
+        <div class="main-modal">
+            <div class="modal-head">
+                <h2>Xác nhận xóa dự án</h2>
+                <ion-icon id="close-remove-modal" class="close-modal" name="close-outline"></ion-icon>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa dự án này?</p>
+            </div>
+            <div class="modal-foot">
+                <button id="btn-remove-cancel" class="btn-cancel" id="btn-remove-cancel">Hủy</button>
+                <button id="btn-remove-confirm" class="btn-confirm">Xóa</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons.js"></script>
     <script src="../js/detail-project-management.js"></script>

@@ -404,18 +404,19 @@ footer{
     line-height: 24px;
 }
 
-.modal-add-task-container{
-    display: none;
+.modal-container{
     position: fixed;
     width: 100vw;
     height: 100vh;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
     background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.modal-add-task-container .main-modal{
+.modal-container .main-modal{
     width: 480px;
     height: fit-content;
     border: 1px solid #dadada;
@@ -423,6 +424,7 @@ footer{
     margin: auto auto;
     background-color: #FFFFFF;
     padding: 15px;
+    animation: scale-up-center 0.2s ease-out forwards;
 }
 
 .modal-head{
@@ -496,3 +498,88 @@ footer{
     cursor: pointer;
     background-color: #2a7fff;
 }
+
+#modal-add-member .main-modal{
+    width: 480px;
+    height: 345px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+}
+
+#modal-add-member .modal-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+#modal-add-member .modal-body{
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-add-member .modal-foot{
+    padding-top: 20px;
+    border-top: 1px solid #dadada;
+}
+
+#modal-delete .main-modal{
+    width: 480px;
+    height: fit-content;
+    border: 1px solid #dadada;
+    background-color: white;
+    border-radius: 8px;
+    animation: scale-up-center 0.2s ease-out forwards;
+}
+
+.modal-head h2{
+    font-weight: 500;
+    font-size: 23.3px;
+    color: #212529;
+    line-height: 30px;
+}
+
+#modal-delete .modal-body{
+    padding: 22px 22px 60px 14px;
+    border-bottom: 1px solid #dadada;
+}
+
+#modal-delete .modal-foot{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 15px 22px 8px 0;
+    gap: 23px;
+}
+
+#modal-delete .modal-foot .btn-cancel{
+    border-style: none;
+    width: 58px;
+    height: 37px;
+    background-color: #6C757D;
+    border-radius: 8px;
+    color: #FFFFFF;
+    transition: all 0.2s linear;
+}
+
+#modal-delete .modal-foot .btn-cancel:hover{
+    cursor: pointer;
+    background-color: #838e97;
+}
+
+#modal-delete .modal-foot .btn-confirm{
+    border-style: none;
+    width: 58px;
+    height: 37px;
+    border-radius: 8px;
+    background-color: #DC3545;
+    color: #FFFFFF;
+    transition: all 0.2s linear;
+}
+
+#modal-delete .modal-foot .btn-confirm:hover{
+    cursor: pointer;
+    background-color: #ff4a5c;
+}
+
+@-webkit-keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}

@@ -233,6 +233,10 @@ thead{
     color: #bdbdbd67;
 }
 
+.wrong{
+    border: 1px solid red;
+}
+
 .disable:hover{
     cursor: not-allowed;
 }
@@ -282,6 +286,7 @@ footer{
     border: 1px solid #dadada;
     background-color: white;
     border-radius: 8px;
+    animation: scale-up-center 0.2s ease-out forwards;
 }
 
 .modal-delete .modal-head h2{
@@ -333,3 +338,5 @@ footer{
     cursor: pointer;
     background-color: #ff4a5c;
 }
+
+@-webkit-keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}

@@ -5,66 +5,52 @@ if(indexUser === null){
 }
 indexUser = +indexUser;
 
-// Kiểm tra xem đã bấm chọn dự án từ trang quản lí dự án chưa
-let idCurrentProject = localStorage.getItem('idProject');
-if(idCurrentProject === null){
-    window.location.href = 'project-management.html';
-}
-idCurrentProject = +idCurrentProject;
+// Kiểm tra xem người dùng đã chọn dự án chưa
+const idProject = +localStorage.getItem('idProject');
 
-// Lấy dữ liệu từ Local Storage
-const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-const projects = JSON.parse(localStorage.getItem('projects')) || [];
+// Lấy dữ liệu trên local storage
+const accounts = JSON.parse(localStorage.getItem('accounts'));
+const projects = JSON.parse(localStorage.getItem('projects'));
 const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+// Lấy tên và mô tả của dự án
+const projectNameElement = document.querySelector("#project-name");
+const projectContentElement = document.querySelector("#project-content");
 
 // Lấy các phần tử trên trên header
 const projectsElement = document.querySelector("#projects");
 const myTaskElement = document.querySelector("#my-task");
 const btnLogoutElement = document.querySelector("#logout");
 
-// Lấy tên và mô tả của dự án
-const projectNameElement = document.querySelector("#project-name");
-const projectContentElement = document.querySelector("#project-content");
-
-// Lấy modal thêm hoặc sửa nhiệm vụ
+// Lấy nút thêm nhiệm vụ
 const btnAddTaskElement = document.querySelector("#btn-add-task");
-const modalAddTaskElement = document.querySelector("#modal-add-task-container");
-const btnExitAddModalElement = document.querySelector("#close-add-modal");
-const btnCancelAddModalElement = document.querySelector("#btn-add-close");
+if(idProject === null){
+    window.location.href = 'project-management.html';
+}
 
-// Ghi lại tên và mô tả của dự án
+// Lấy tiêu đề và mô tả của dự án
 function writeNameContent(){
     // Lấy index của dự án thông qua id
-    const indexProject = projects.findIndex(project => project.id === idCurrentProject);
+    const indexProject = projects.findIndex(project => project.id === idProject);
     projectNameElement.textContent = projects[indexProject].projectName;
     projectContentElement.textContent = projects[indexProject].description;
 }
 
 writeNameContent();
 
+// Lấy modal thêm nhiệm vụ
+const modalAddTaskElement = document.querySelector("#modal-add-task-container");
+const btnExitAddTaskElement = document.querySelector("#close-add-modal");
+const btnCloseAddTaskElement = document.querySelector("#btn-add-close");
 // Bấm nút thêm nhiệm vụ
 btnAddTaskElement.addEventListener('click', function(){
     modalAddTaskElement.style.display = 'flex';
 })
 
-// Tắt modal
-btnExitAddModalElement.addEventListener('click', function(){
+// Đóng modal thêm nhiệm vụ
+function closeAddTaskModal(){
     modalAddTaskElement.style.display = 'none';
-})
+}
 
-btnCancelAddModalElement.addEventListener('click', function(){
-    modalAddTaskElement.style.display = 'none';
-})
-
-// Quay trở lại trang dự án
-projectsElement.addEventListener('click', function(){
-    window.location.href ='project-management.html'
-    localStorage.removeItem('idProject');
-})
-
-// Đăng xuất tài khoản
-btnLogoutElement.addEventListener('click', function(){
-    localStorage.removeItem('idProject');
-    localStorage.removeItem('indexUser');
-    window.location.href = 'login.html';
-})
+btnExitAddTaskElement.addEventListener('click', closeAddTaskModal);
+btnCloseAddTaskElement.addEventListener('click', closeAddTaskModal);

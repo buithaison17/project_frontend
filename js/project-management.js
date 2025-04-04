@@ -56,7 +56,9 @@ let pagesProject = [];
 btnAddProject.addEventListener('click', function(){
     modalAddProject.style.display = 'flex';
     inputNameProjectElement.value = '';
+    inputNameProjectElement.classList.remove('wrong');
     inputDescriptionProjectElement.value = '';
+    alerNameProjectElement.textContent = '';
 })
 
 // Đóng modal thêm dự án
@@ -84,12 +86,15 @@ function addProject(){
 
     if(inputNameProjectElement.value === ''){
         alerNameProjectElement.textContent = 'Tên dự án không được để trống';
+        inputNameProjectElement.classList.add('wrong');
     }
     else if(myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase())){
         alerNameProjectElement.textContent = 'Dự án đã tồn tại';
+        inputNameProjectElement.classList.add('wrong');
     }
     else{
         alerNameProjectElement.textContent = '';
+        inputNameProjectElement.classList.add('wrong');
     }
 
     if(inputNameProjectElement.value !== '' && !myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase())){
@@ -190,6 +195,8 @@ function removeProject(index, page) {
 // Hàm chỉnh sửa thông tin dự án
 function editProject(index, page) {
     modalAddProject.style.display = 'flex';
+    alerNameProjectElement.textContent = '';
+    inputNameProjectElement.classList.remove('wrong');
 
     const projectId = pagesProject[page][index].id;
     const projectIndex = projects.findIndex(proj => proj.id === projectId);    
@@ -210,14 +217,16 @@ function editProject(index, page) {
     btnAddSaveElement.addEventListener('click', function(){
         if(inputNameProjectElement.value === ''){
             alerNameProjectElement.textContent = 'Tên dự án không được để trống';
+            inputNameProjectElement.classList.add('wrong');
             return;
         }
         
         if (projects.some(proj => 
             proj.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase() &&
             proj.id !== projects[projectIndex].id)) {
-             alerNameProjectElement.textContent = 'Tên dự án đã tồn tại';
-            return;
+                alerNameProjectElement.textContent = 'Tên dự án đã tồn tại';
+                inputNameProjectElement.classList.add('wrong');
+                return;
         }
         
         modalAddProject.style.display = 'none';
