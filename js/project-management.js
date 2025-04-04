@@ -55,6 +55,8 @@ let pagesProject = [];
 // Tiến hành thêm dự án
 btnAddProject.addEventListener('click', function(){
     modalAddProject.style.display = 'flex';
+    inputNameProjectElement.value = '';
+    inputDescriptionProjectElement.value = '';
 })
 
 // Đóng modal thêm dự án
@@ -135,7 +137,6 @@ function renderListProject(page){
         listProjectElement.innerHTML = '';
         return;
     };
-
 
     listProjectElement.innerHTML = pagesProject[page].map((project, index) => {
         return `<tr>
@@ -226,10 +227,11 @@ function editProject(index, page) {
         inputNameProjectElement.value = '';
         inputDescriptionProjectElement.value = '';
         localStorage.setItem('projects', JSON.stringify(projects));
+        btnAddSaveElement.addEventListener('click', addProject);
         getListProject();
     })
-
 }
+
 // Hàm phân chia danh sách project
 function createPageProject(myListProject){
     pagesProject = [];
