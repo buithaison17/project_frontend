@@ -9,7 +9,7 @@ const alerEmailElement = document.querySelector('#alert-email');
 const alerPasswordElement = document.querySelector('#alert-password');
 
 // Lấy dữ liệu tài khoản từ local storage
-const accounts = JSON.parse(localStorage.getItem('accounts'));
+const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
 
 // Lắng nghe sự kiện đăng kí
 btnLoginElement.addEventListener('click', function(event){

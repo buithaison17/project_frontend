@@ -7,7 +7,7 @@ indexUser = +indexUser;
 
 // Lấy dữ liệu có trong local storage
 const projects = JSON.parse(localStorage.getItem('projects')) || [];
-const accounts = JSON.parse(localStorage.getItem('accounts'));
+const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
 
 // Lấy ID người dùng đang đăn nhập
 const currentUserId = accounts[indexUser].id;
@@ -27,19 +27,16 @@ const inputDescriptionProjectElement = document.querySelector("#description-add-
 const btnAddCancelElement = document.querySelector("#btn-add-cancel");
 const btnAddSaveElement = document.querySelector("#btn-add-save");
 
-// Lấy phần tử tìm kiếm
-const searchInputElement = document.querySelector("#search-project");
+// Lấy phần tử in danh sách dự án
+const listProjectElement = document.querySelector("tbody");
 
-// Lấy phần tử thông báo trùng tên dự án
-const alerNameProjectElement = document.querySelector("#alert-name-project");
-
-// Lấy các phần tử nút bấm chuyển trang
+// Phần tử liên quan đến phân trang
+let totalPage = 0;
+let currentPage = 1;
+let myListProject;
+const btnPagesElement = document.querySelector("#page-number");
 const btnPrevElement = document.querySelector("#btn-prev");
 const btnNextElement = document.querySelector("#btn-next");
-const pageNumberElement = document.querySelector("#page-number");
-
-// Lấy phần tử danh sách project
-const listProjectElement = document.querySelector("tbody");
 
 // Lấy các phần tử modal xác nhận xóa dự án
 const btnRemoveCloseModal = document.querySelector("#close-remove-modal"); 
@@ -47,270 +44,236 @@ const btnRemoveCancelModal = document.querySelector("#btn-remove-cancel");
 const btnRemoveConfirmModal = document.querySelector("#btn-remove-confirm");
 const modalDeleteElement = document.querySelector("#modal-delete");
 
-// Các phần tử liên quan đến phân chia trang
-let totalPage = 0;
-let currentPage = 0;
-let pagesProject = [];
+// Lấy phần tử tìm kiếm
+const inputSearchElement = document.querySelector("#search-project");
 
-// Tiến hành thêm dự án
+// Để lưu hàm xử lý sửa
+let editHandler = null; 
+
+// Lấy dự án của người dùng
+function getProjects(){
+    myListProject = projects.filter(project => 
+        project.member.some(member => member.userId === currentUserId && member.role === 'Project Owner')
+    );
+}   
+
+getProjects();
+
+// Mở modal thêm dự án
 btnAddProject.addEventListener('click', function(){
     modalAddProject.style.display = 'flex';
-    inputNameProjectElement.value = '';
-    inputNameProjectElement.classList.remove('wrong');
-    inputDescriptionProjectElement.value = '';
-    alerNameProjectElement.textContent = '';
 })
+
+// Xóa dữ án lưu trữ trước đó nếu người dùng từ trang chi tiết dự án quy lại trang này
+localStorage.removeItem("idProject");
+
+// Lấy phần tử thông báo lỗi khi thêm dự án
+const alerNameProjectElement = document.querySelector("#alert-name-project");
 
 // Đóng modal thêm dự án
-btnCloseModal.addEventListener('click', function(){
+function closeAddProject(){
     modalAddProject.style.display = 'none';
-})
-
-// Sự kiện bấm nút hủy của modal thêm dự án
-btnAddCancelElement.addEventListener('click', function(){
-    modalAddProject.style.display = 'none';
-})
-
-// Sự kiện bấm ra ngoài phạm vi thêm project
-modalAddProject.addEventListener('click', function(event){
-    if (!mainModalAdd.contains(event.target) && !event.target.closest('.modal-head') && !event.target.closest('.btn-modal')) {
-        modalAddProject.style.display = 'none';
-    }
-})
-
-// Bấm lưu và tiến hành thêm project
-function addProject(){
-    const myListProject = projects.filter(project => 
-        project.member.some(member => member.userId === currentUserId)
-    ); 
-
-    if(inputNameProjectElement.value === ''){
-        alerNameProjectElement.textContent = 'Tên dự án không được để trống';
-        inputNameProjectElement.classList.add('wrong');
-    }
-    else if(myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase())){
-        alerNameProjectElement.textContent = 'Dự án đã tồn tại';
-        inputNameProjectElement.classList.add('wrong');
-    }
-    else{
-        alerNameProjectElement.textContent = '';
-        inputNameProjectElement.classList.add('wrong');
-    }
-
-    if(inputNameProjectElement.value !== '' && !myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase())){
-        const newProject = {
-            id: projects.length+1,
-            projectName: inputNameProjectElement.value.trim(),
-            description: inputDescriptionProjectElement.value.trim(),
-            member: [
-                {
-                    userId: currentUserId,
-                    role: 'Project Owner',
-                }
-            ]
-        }
-
-        projects.push(newProject);
-        inputNameProjectElement.value = '';
-        inputDescriptionProjectElement.value = ''
-        localStorage.setItem('projects', JSON.stringify(projects)); 
-        modalAddProject.style.display = 'none';
-        getListProject();        
-    }
+    inputNameProjectElement.value = '';
+    inputDescriptionProjectElement.value = '';
+    alerNameProjectElement.textContent = '';
+    inputNameProjectElement.classList.remove('wrong');
 }
 
-btnAddSaveElement.addEventListener('click', addProject);
+btnAddCancelElement.addEventListener('click', closeAddProject);
+btnCloseModal.addEventListener('click', closeAddProject);
 
-// Tiến hành đăng xuất tài khoản
-btnLogoutElement.addEventListener('click', function(){
-    localStorage.removeItem('indexUser');
-    window.location.href = 'login.html';
-})
-
-// Tiến hành render ra các button chuyển trang
-function renderButton(){
-    let htmls = '';
-    for(let i = 0; i < totalPage; i++){
-        htmls += `<div onclick = "nextToPage(${i})" class = "${i == currentPage ? 'active' : ''}">${i+1}</div>`
-    }
-    pageNumberElement.innerHTML = htmls;
-}
-
-// Tiến hành in ra danh sách project
-function renderListProject(page){
-    if (!pagesProject[page]){
-        listProjectElement.innerHTML = '';
-        return;
-    };
-
-    listProjectElement.innerHTML = pagesProject[page].map((project, index) => {
+// In danh sách dự án
+function renderProject(list){
+    listProjectElement.innerHTML = list.map((project, index) => {
         return `<tr>
                             <td class="id">${project.id}</td>
                             <td class="name-project">${project.projectName}</td>
                             <td colspan="3" class="action">
-                                <span onclick = "editProject(${index}, ${page})" class="btn-edit">Sửa</span>
-                                <span onclick = "removeProject(${index}, ${page})" class="btn-remove">Xóa</span>
-                                <span onclick = "viewDetailProject(${index}, ${page})" class="btn-detail">Chi tiết</span>
+                                <span onclick = "editProject(${index})" class="btn-edit">Sửa</span>
+                                <span onclick = "removeProject(${index})" class="btn-remove">Xóa</span>
+                                <span onclick = "viewProject(${index})" class="btn-detail">Chi tiết</span>
                             </td>
                         </tr>`
     }).join('');
 }
 
-// Bấm xem chi tiết project
-function viewDetailProject(index, page){
-    const idProjectViewDetail = pagesProject[page][index].id
-    localStorage.setItem('idProject', idProjectViewDetail);
-    window.location.href = 'detail-project-management.html';
+// In danh sách các nút chuyển trang
+function renderButton(){
+    btnPagesElement.innerHTML = '';
+
+    totalPage = Math.ceil(myListProject.length / 4);
+    let start = (currentPage - 1) * 4;
+    let end = start + 4;
+    const result = myListProject.slice(start, end);
+
+    for(let i = 1; i <= totalPage; i++){
+        const btnPage = document.createElement('div');
+        btnPage.textContent = i;
+        btnPage.classList.add('btn-page');
+        if (i === currentPage) btnPage.classList.add('active');
+
+        btnPage.addEventListener('click', function(){
+            currentPage = i;
+            renderButton();
+        });
+
+        btnPagesElement.appendChild(btnPage);
+    }
+
+    btnPrevElement.classList.toggle('disable', currentPage === 1);
+    btnNextElement.classList.toggle('disable', currentPage === totalPage);
+    renderProject(result);
+}
+
+// Kiểm tra trang để disable btnPrev và btnNext
+function checkPage(){
+    if(totalPage === 1 || totalPage === 0){
+        btnPrevElement.classList.add('disable');
+        btnNextElement.classList.add('disable');
+    } else {
+        btnPrevElement.classList.remove('disable');
+        btnNextElement.classList.remove('disable');
+    }
+}
+
+checkPage();
+
+// Bấm nút lùi trang
+btnPrevElement.addEventListener('click', function(){
+    if(currentPage > 1){
+        currentPage--;
+        renderButton();
+    }
+});
+
+// Bấm nút chuyển rang tiếp theo
+btnNextElement.addEventListener('click', function(){
+    if(currentPage < totalPage){
+        currentPage++;
+        renderButton();
+    }
+});
+
+renderButton();
+
+// Hàm đóng modal xóa
+function closeModalDelete(){
+    modalDeleteElement.style.display = 'none';
 }
 
 // Hàm xóa project
-function removeProject(index, page) {
+function removeProject(index){
     modalDeleteElement.style.display = 'flex';
-
-    btnRemoveCancelModal.onclick = function() {
-        modalDeleteElement.style.display = 'none';
-    };
-
-    btnRemoveCloseModal.onclick = function() {
-        modalDeleteElement.style.display = 'none';
-    };
-
-    
-    btnRemoveConfirmModal.onclick = function() {
-        const projectId = pagesProject[page][index].id;
-        const projectIndex = projects.findIndex(proj => proj.id === projectId);
-
-        if (projectIndex !== -1) {
-            projects.splice(projectIndex, 1);
-            localStorage.setItem('projects', JSON.stringify(projects));
+    btnRemoveCloseModal.addEventListener('click', closeModalDelete);
+    btnRemoveCancelModal.addEventListener('click', closeModalDelete);
+    btnRemoveConfirmModal.addEventListener('click', function(){
+        const indexProjectDelete = projects.findIndex(project => project.id === myListProject[index].id);
+        projects.splice(indexProjectDelete, 1);
+        localStorage.setItem('projects', JSON.stringify(projects));
+        
+        if (myListProject.length % 4 === 0 && currentPage > 1) {
+            currentPage--;
         }
-
-        modalDeleteElement.style.display = 'none';
-    
-        getListProject();
-
-    };
+        
+        getProjects();
+        renderButton();
+        closeModalDelete();                
+    })
 }
 
-// Hàm chỉnh sửa thông tin dự án
-function editProject(index, page) {
+// Thêm danh dự ấn
+function addProject(){
+    if(inputNameProjectElement.value.trim() === ''){
+        alerNameProjectElement.textContent = 'Tên dự án không được để trống';
+        inputNameProjectElement.classList.add('wrong');
+        return;
+    }
+
+    if(myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.trim().toLowerCase())){
+        alerNameProjectElement.textContent = 'Dự án đã tồn tại';
+        inputNameProjectElement.classList.add('wrong');
+        return;
+    }
+
+    const newProject = {
+        id: Math.ceil(Math.random()*1000000),
+        projectName: inputNameProjectElement.value.trim(),
+        description: inputDescriptionProjectElement.value,
+        member: [
+            {
+                userId: currentUserId,
+                role: 'Project Owner'
+            }
+        ]
+    }
+
+    projects.push(newProject);
+    localStorage.setItem('projects', JSON.stringify(projects));
+
+    getProjects();
+    renderButton();
+    closeAddProject();
+}
+
+btnAddSaveElement.addEventListener('click', addProject);
+
+// Sửa dự án
+function editProject(index){
     modalAddProject.style.display = 'flex';
-    alerNameProjectElement.textContent = '';
-    inputNameProjectElement.classList.remove('wrong');
-
-    const projectId = pagesProject[page][index].id;
-    const projectIndex = projects.findIndex(proj => proj.id === projectId);    
-
-    inputNameProjectElement.value = projects[projectIndex].projectName;
-    inputDescriptionProjectElement.value = projects[projectIndex].description;
-
-    btnCloseModal.onclick = function() {
-        modalDeleteElement.style.display = 'none';
-    };
-
-    btnAddCancelElement.onclick = function() {
-        modalDeleteElement.style.display = 'none';
-    };
-
+    inputNameProjectElement.value = projects[index].projectName;
+    inputDescriptionProjectElement.value = projects[index].description;
+    
     btnAddSaveElement.removeEventListener('click', addProject);
 
-    btnAddSaveElement.addEventListener('click', function(){
-        if(inputNameProjectElement.value === ''){
+    editHandler = function(){
+        if(inputNameProjectElement.value.trim() === ''){
             alerNameProjectElement.textContent = 'Tên dự án không được để trống';
             inputNameProjectElement.classList.add('wrong');
             return;
         }
-        
-        if (projects.some(proj => 
-            proj.projectName.toLowerCase() === inputNameProjectElement.value.toLowerCase() &&
-            proj.id !== projects[projectIndex].id)) {
+
+        if (myListProject.some(proj => 
+            proj.projectName.toLowerCase() === inputNameProjectElement.value.trim().toLowerCase() &&
+            proj.id !== projects[index].id)) {
                 alerNameProjectElement.textContent = 'Tên dự án đã tồn tại';
                 inputNameProjectElement.classList.add('wrong');
                 return;
         }
-        
-        modalAddProject.style.display = 'none';
-        projects[projectIndex].projectName = inputNameProjectElement.value;
-        projects[projectIndex].description = inputDescriptionProjectElement.value;
-        alerNameProjectElement.textContent = '';
-        inputNameProjectElement.value = '';
-        inputDescriptionProjectElement.value = '';
+
+        projects[index].projectName = inputNameProjectElement.value.trim();
+        projects[index].description = inputDescriptionProjectElement.value.trim();
         localStorage.setItem('projects', JSON.stringify(projects));
+
+        btnAddSaveElement.removeEventListener('click', editHandler);
         btnAddSaveElement.addEventListener('click', addProject);
-        getListProject();
-    })
+
+        getProjects();
+        renderButton();
+        closeAddProject();
+    };
+
+    btnAddSaveElement.addEventListener('click', editHandler);
 }
 
-// Hàm phân chia danh sách project
-function createPageProject(myListProject){
-    pagesProject = [];
-    currentPage = 0;
-
-    totalPage = Math.ceil(myListProject.length / 4);    
-
-    if(totalPage === 1){
-        btnNextElement.classList.add('disable')
-        btnPrevElement.classList.add('disable');
-    }
-    else{
-        btnNextElement.classList.remove('disable');
-        btnPrevElement.classList.remove('disable');
-    }
-
-    for(let i = 0; i < myListProject.length; i+=4){
-        pagesProject.push(myListProject.slice(i, i + 4));
-    }
-
-    //Render ra các nút dùng để chuyển trang
-    renderButton();
-    
-    // Render các trang project
-    renderListProject(0);
+// Xem chi tiết project
+function viewProject(index){
+    localStorage.setItem('idProject', projects[index].id);
+    window.location.href = "detail-project-management.html";
 }
 
+projectsElement.addEventListener('click', function(){
 
-// Sự kiện bấm nút quay lại trang
-btnPrevElement.addEventListener('click', function(){
-    if(currentPage <= totalPage - 1){
-        currentPage--;
-        renderListProject(currentPage);
-    }
-    btnPrevElement.classList.toggle('disable', currentPage === 0);
-    btnNextElement.classList.toggle('disable', currentPage >= totalPage - 1);
+});
+
+// Tìm kiếm project
+inputSearchElement.addEventListener('input', function(event){
+    const searchProject = myListProject.filter(project => project.projectName.toLowerCase().includes(event.target.value.trim().toLowerCase()));
+    renderProject(searchProject);
 })
 
-// Sự kiện bấm nút trang tiếp theo
-btnNextElement.addEventListener('click', function(){
-    if(currentPage >= 0){
-        currentPage++;
-        renderListProject(currentPage);
-    }
-    
-    btnPrevElement.classList.toggle('disable', currentPage === 0);
-    btnNextElement.classList.toggle('disable', currentPage >= totalPage - 1);
+// Đăng xuất
+btnLogoutElement.addEventListener('click', function(){
+    window.location.href = 'login.html';
+    localStorage.removeItem('indexUser');
+    localStorage.removeItem('idProject');
 })
-
-// Tiến hành lấy các dự án của người dùng
-function getListProject() {
-    const myListProject = projects.filter(project => 
-        project.member.some(member => member.userId === currentUserId)
-    );    
-    currentPage = 0;
-
-    searchInputElement.addEventListener('input', function(event) {
-        const searchArray = myListProject.filter(project => 
-            project.projectName.toLowerCase().includes(event.target.value.toLowerCase()) // Không có dấu chấm phẩy ở đây
-        );
-        createPageProject(searchArray);
-        
-        if(event.target.value === ''){
-            createPageProject(myListProject);
-        }
-
-    });
-
-    // Phân chia dữ thành từng trang
-    createPageProject(myListProject);
-}
-
-getListProject();

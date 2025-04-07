@@ -63,7 +63,7 @@ btnRegisterElement.addEventListener('click', function(event){
     // Tiến hành tạo tài khoản mới khi dữ liệu người dùng nhập hợp lệ
     if(isValidateEmail(emailInputElement.value) && isValidateName(nameInputElement.value) && isValidatePassword(passwordInputElement.value) && passwordInputElement.value === confirmPasswordInputElement.value){
         const newAccount = {
-            id: accounts.length+1,
+            id: Math.ceil(Math.random()*100000),
             fullName: nameInputElement.value.trim(),
             email: emailInputElement.value.trim(),
             password: passwordInputElement.value,

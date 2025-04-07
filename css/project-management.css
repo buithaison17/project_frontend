@@ -226,6 +226,7 @@ thead{
     height: 35px;
     width: 38px;
     border: 1px solid #DEE2E6;
+    cursor: pointer;
 }
 
 .disable{

@@ -23,7 +23,7 @@ header{
     color: white;
     justify-content: space-between;
     align-items: center;
-    font-weight: 400px;
+    font-weight: 400;
 }
 
 .header-left{
@@ -101,7 +101,7 @@ header{
     gap: 5px;
 }
 
-.view-member .member .avatar-member{
+.avatar-member{
     width: 40px;
     height: 40px;
     background-color: aqua;
@@ -109,6 +109,11 @@ header{
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #FFFFFF;
+}
+
+.avatar-member p{
+    font-size: 20px;
 }
 
 .view-all-member{
@@ -210,6 +215,13 @@ h2{
     border-radius: 6px;
     flex: 1;
     margin-bottom: 20px;
+    overflow-y: auto;
+}
+
+.list-member{
+    display: flex;
+    align-items: center;
+    gap: 25px;
 }
 
 .list-task{
@@ -407,18 +419,20 @@ footer{
 .modal-container{
     position: fixed;
     width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
+    min-height: 100vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.modal-container .main-modal{
+#modal-add-task .main-modal{
     width: 480px;
-    height: fit-content;
+    min-height: 834px;
+    overflow-y: auto;
     border: 1px solid #dadada;
     border-radius: 8px;
     margin: auto auto;
@@ -501,9 +515,11 @@ footer{
 
 #modal-add-member .main-modal{
     width: 480px;
-    height: 345px;
+    min-height: 345px;
     border-radius: 8px;
     background-color: #FFFFFF;
+    padding: 10px;
+    animation: scale-up-center 0.2s ease-out forwards;
 }
 
 #modal-add-member .modal-head{
@@ -580,6 +596,46 @@ footer{
 #modal-delete .modal-foot .btn-confirm:hover{
     cursor: pointer;
     background-color: #ff4a5c;
+}
+
+.wrong{
+    border: 1px solid #DC3545;
+}
+
+.alert{
+    color: #DC3545;
+}
+
+#modal-view-member .main-modal{
+    width: 600px;
+    min-height: fit-content;
+    background-color: #FFFFFF;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#modal-view-member .modal-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#modal-view-member .modal-body .member-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-start;
+}
+
+#modal-view-member .modal-body .list-member{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#modal-view-member .modal-body .member{
+    display: flex;
+    gap: 10px;
 }
 
 @-webkit-keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}

@@ -29,26 +29,28 @@
                     <h3>Thành viên</h3>
                     <button id="btn-add-member" class="btn-add-member">+ Thêm thành viên</button>
                 </div>
-                <div class="view-member">
-                    <div class="member">
-                        <div class="avatar-member">
-                            <p>AN</p>
+                <div id="view-member" class="view-member">
+                    <div id="list-member" class="list-member">
+                        <div class="member">
+                            <div class="avatar-member">
+                                <p>AN</p>
+                            </div>
+                            <div class="infor-member">
+                                <p class="name-member">An Nguyễn</p>
+                                <p class="position-member">Project owner</p>
+                            </div>
                         </div>
-                        <div class="infor-member">
-                            <p class="name-member">An Nguyễn</p>
-                            <p class="position-member">Project owner</p>
+                        <div class="member">
+                            <div class="avatar-member">
+                                <p>AN</p>
+                            </div>
+                            <div class="infor-member">
+                                <p class="name-member">An Nguyễn</p>
+                                <p class="role-member">Project owner</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="member">
-                        <div class="avatar-member">
-                            <p>AN</p>
-                        </div>
-                        <div class="infor-member">
-                            <p class="name-member">An Nguyễn</p>
-                            <p class="position-member">Project owner</p>
-                        </div>
-                    </div>
-                    <div class="view-all-member">...</div>
+                    <div id="view-all-member" class="view-all-member">...</div>
                 </div>
             </div>            
         </aside>
@@ -104,7 +106,7 @@
         <footer>&copy; 2025 Team management. All rights reverved.</footer>
     </div>
 
-    <div style="display: none;" id="modal-add-task-container" class="modal-container">
+    <div style="display: none;" id="modal-add-task" class="modal-container">
         <div class="main-modal">
             <div class="modal-head">
                 <h2>Thêm/ sửa nhiệm vụ</h2>
@@ -112,25 +114,32 @@
             </div>
             <div class="modal-body">
                 <label for="name-task-input" class="name-label mt">Tên nhiệm vụ</label>
-                <input type="text" class="input" id="name-task-input">
+                <input type="text" class="input wrong" id="name-task-input">
+                <p id="alert-name-task" class="alert">Vui lòng nhập tên nhiệm vụ</p>
                 <label class="name-label" for="person-in-charge-input">Người phụ trách</label>
                 <select class="input" id="person-in-charge-input">
                     <option value="">Người phụ trách</option>
                 </select>
+                <p id="alert-person-task" class="alert">Vui lòng chọn người phụ trách</p>
                 <label class="name-label" for="status-input">Trạng thái</label>
                 <select class="input" id="status-input">
                     <option value=""></option>
                 </select>
+                <p id="alert-status-task" class="alert">Vui lòng chọn trạng thái</p>
                 <label class="name-label" for="on-date-input">Ngày bắt đầu</label>
-                <input type="date" class="input">
+                <input type="date" id="on-date-input" class="input">
+                <p id="alert-on-date-task" class="alert">Vui lòng chọn ngày bắt đầu</p>
                 <label class="name-label" for="late-date">Hạn cuối</label>
-                <input type="date" class="input">
+                <input type="date" id="late-date" class="input">
+                <p id="alert-late-date-task" class="alert">Vui lòng chọn ngày kết thúc</p>
                 <label for="priority-input" class="name-label">Độ ưu tiên</label>
                 <select id="priority-input" class="input">
+                    <option value="">Độ ưu tiên</option>
                     <option value="">Thấp</option>
                     <option value="">Trung bình</option>
                     <option value="">Cao</option>
                 </select>
+                <p id="alert-priority-task" class="alert">Vui lòng chọn độ ưu tiên</p>
                 <label for="progress-input" class="name-label">Tiến độ</label>
                 <select id="progress-input" class="input">
                     <option value="">Chọn tiến độ</option>
@@ -138,6 +147,7 @@
                     <option value="">Rủi ro cao</option>
                     <option value="">Trễ hạn</option>
                 </select>
+                <p id="alert-progress-task" class="alert">Vui lòng chọn tiến độ</p>
             </div>
             <div class="modal-foot">
                 <button id="btn-add-close" class="btn-cancel">Hủy</button>
@@ -150,22 +160,24 @@
         <div class="main-modal">
             <div class="modal-head">
                 <h2>Thêm thành viên</h2>
-                <ion-icon id="close-add-member-modal" class="icon" name="close-outline"></ion-icon>
+                <ion-icon id="close-add-member" class="icon" name="close-outline"></ion-icon>
             </div>
             <div class="modal-body">
                 <label for="email-user-invite">Email</label>
                 <input type="email" id="email-user-invite" class="input">
+                <p id="alert-email-member" class="alert"></p>
                 <label for="position-user-invite" class="mt">Vai trò</label>
                 <select id="position-user-invite" class="input">
-                    <option value=""></option>
-                    <option value=""></option>
-                    <option value=""></option>
+                    <option value="">Chọn vai trò</option>
+                    <option value="Developer">Developer</option>
+                    <option value="Tester">Tester</option>
                 </select>
+                <p id="alert-role-member" class="alert"></p>
                 <br>
             </div>
             <div class="modal-foot">
-                <button class="btn-cancel">Hủy</button>
-                <button class="btn-save">Lưu</button>
+                <button id="cancel-add-member" class="btn-cancel">Hủy</button>
+                <button id="save-add-member" class="btn-save">Lưu</button>
             </div>
         </div>
     </div>
@@ -182,6 +194,44 @@
             <div class="modal-foot">
                 <button id="btn-remove-cancel" class="btn-cancel" id="btn-remove-cancel">Hủy</button>
                 <button id="btn-remove-confirm" class="btn-confirm">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-view-member" class="modal-container">
+        <div class="main-modal">
+            <div class="modal-head">
+                <h2>Thành viên</h2>
+                <ion-icon id="close-remove-modal" class="close-modal" name="close-outline"></ion-icon>
+            </div>
+            <div class="modal-body mt">
+                <div class="member-container">
+                    <h2>Thành viên</h2>
+                    <div class="list-member mt">
+                        <div class="member">
+                            <div class="avatar-member">
+                                <p>so</p>
+                            </div>
+                            <div class="infor-member">
+                                <p>Bùi Thái Sơn</p>
+                                <p>sonbui@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="member">
+                            <div class="avatar-member">
+                                <p>so</p>
+                            </div>
+                            <div class="infor-member">
+                                <p>Bùi Thái Sơn</p>
+                                <p>sonbui@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="member-container">
+                    <h2>Vai trò</h2>
+                    
+                </div>
             </div>
         </div>
     </div>
