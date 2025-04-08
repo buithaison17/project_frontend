@@ -7,7 +7,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: Roboto, sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 header{
@@ -258,7 +258,8 @@ thead{
 }
 
 footer{
-    flex: 0.8;
+    height: 56px;
+    /* flex: 0.8; */
     background-color: #212529;
     color: white;
     display: flex;

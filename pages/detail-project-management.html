@@ -30,7 +30,9 @@
                     <button id="btn-add-member" class="btn-add-member">+ Thêm thành viên</button>
                 </div>
                 <div id="view-member" class="view-member">
-                    <div id="list-member" class="list-member"></div>
+                    <div id="list-member" class="list-member">
+                        
+                    </div>
                     <div id="view-all-member" class="view-all-member">...</div>
                 </div>
             </div>            
@@ -64,23 +66,85 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="detail" id="to-do">
-                            <ion-icon name="caret-forward"></ion-icon>
+                        <td class="detail">
+                            <ion-icon class="hover" id="view-todo" name="caret-forward"></ion-icon>
                             <p class="name">To Do</p>
                         </td>
                     </tr>
-                    <tr class="list">
-                        <td class="name-task border">Soạn thảo đề cương</td>
-                        <td class="person-in-charge border">Son bui</td>
-                        <td class="border"><p class="high">Cao</p></td>
-                        <td class="date border">02 - 24</td>
-                        <td class="date border">02 - 27</td>
-                        <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
-                        <td class="border btn">
-                            <span class="btn-edit">Sửa</span>
-                            <span class="btn-remove">Xóa</span>
+                    <div id="list-todo">
+                        <tr class="list">
+                            <td class="name-task border">Soạn thảo đề cương</td>
+                            <td class="person-in-charge border">Son bui</td>
+                            <td class="border"><p class="high">Cao</p></td>
+                            <td class="date border">02 - 24</td>
+                            <td class="date border">02 - 27</td>
+                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
+                            <td class="border btn">
+                                <span class="btn-edit">Sửa</span>
+                                <span class="btn-remove">Xóa</span>
+                            </td>
+                        </tr>
+                    </div>
+                    <tr>
+                        <td class="detail">
+                            <ion-icon class="hover" id="view-progress" name="caret-forward"></ion-icon>
+                            <p class="name">In Progress</p>
                         </td>
                     </tr>
+                    <div id="list-inprogress">
+                        <tr class="list">
+                            <td class="name-task border">Soạn thảo đề cương</td>
+                            <td class="person-in-charge border">Son bui</td>
+                            <td class="border"><p class="high">Cao</p></td>
+                            <td class="date border">02 - 24</td>
+                            <td class="date border">02 - 27</td>
+                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
+                            <td class="border btn">
+                                <span class="btn-edit">Sửa</span>
+                                <span class="btn-remove">Xóa</span>
+                            </td>
+                        </tr>
+                    </div>
+                    <tr>
+                        <td class="detail">
+                            <ion-icon class="hover" id="view-pending" name="caret-forward"></ion-icon>
+                            <p class="name">Pending</p>
+                        </td>
+                    </tr>
+                    <div id="list-pending">
+                        <tr class="list">
+                            <td class="name-task border">Soạn thảo đề cương</td>
+                            <td class="person-in-charge border">Son bui</td>
+                            <td class="border"><p class="high">Cao</p></td>
+                            <td class="date border">02 - 24</td>
+                            <td class="date border">02 - 27</td>
+                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
+                            <td class="border btn">
+                                <span class="btn-edit">Sửa</span>
+                                <span class="btn-remove">Xóa</span>
+                            </td>
+                        </tr>
+                    </div>
+                    <tr>
+                        <td class="detail">
+                            <ion-icon id="view-done" class="hover" name="caret-forward"></ion-icon>
+                            <p class="name">Done</p>
+                        </td>
+                    </tr>
+                    <div id="list-done">
+                        <tr class="list">
+                            <td class="name-task border">Soạn thảo đề cương</td>
+                            <td class="person-in-charge border">Son bui</td>
+                            <td class="border"><p class="high">Cao</p></td>
+                            <td class="date border">02 - 24</td>
+                            <td class="date border">02 - 27</td>
+                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
+                            <td class="border btn">
+                                <span class="btn-edit">Sửa</span>
+                                <span class="btn-remove">Xóa</span>
+                            </td>
+                        </tr>
+                    </div>
                 </tbody>
             </table>
         </aside>
@@ -95,13 +159,15 @@
             </div>
             <div class="modal-body">
                 <label for="name-task-input" class="name-label mt">Tên nhiệm vụ</label>
-                <input type="text" class="input wrong" id="name-task-input">
-                <p id="alert-name-task" class="alert">Vui lòng nhập tên nhiệm vụ</p>
+                <input type="text" class="input" id="name-task-input">
+                <p id="alert-name-task" class="alert"></p>
                 <label class="name-label" for="person-in-charge-input">Người phụ trách</label>
                 <select class="input" id="person-in-charge-input">
                     <option value="">Người phụ trách</option>
+                    <option value="Sơn bùi">sơn bùi</option>
+                    <option value="ss">ss</option>
                 </select>
-                <p id="alert-person-task" class="alert">Vui lòng chọn người phụ trách</p>
+                <p id="alert-person-task" class="alert"></p>
                 <label class="name-label" for="status-input">Trạng thái</label>
                 <select class="input" id="status-input">
                     <option value="">Chọn trạng thái</option>
@@ -110,33 +176,33 @@
                     <option value="Pending">Pending</option>
                     <option value="Done">Done</option>
                 </select>
-                <p id="alert-status-task" class="alert">Vui lòng chọn trạng thái</p>
+                <p id="alert-status-task" class="alert"></p>
                 <label class="name-label" for="on-date-input">Ngày bắt đầu</label>
                 <input type="date" id="on-date-input" class="input">
-                <p id="alert-on-date-task" class="alert">Vui lòng chọn ngày bắt đầu</p>
+                <p id="alert-on-date-task" class="alert"></p>
                 <label class="name-label" for="late-date">Hạn cuối</label>
                 <input type="date" id="late-date" class="input">
-                <p id="alert-late-date-task" class="alert">Vui lòng chọn ngày kết thúc</p>
+                <p id="alert-late-date-task" class="alert"></p>
                 <label for="priority-input" class="name-label">Độ ưu tiên</label>
                 <select id="priority-input" class="input">
                     <option value="">Độ ưu tiên</option>
-                    <option value="">Thấp</option>
-                    <option value="">Trung bình</option>
-                    <option value="">Cao</option>
+                    <option value="low">Thấp</option>
+                    <option value="medium">Trung bình</option>
+                    <option value="hight">Cao</option>
                 </select>
-                <p id="alert-priority-task" class="alert">Vui lòng chọn độ ưu tiên</p>
+                <p id="alert-priority-task" class="alert"></p>
                 <label for="progress-input" class="name-label">Tiến độ</label>
                 <select id="progress-input" class="input">
                     <option value="">Chọn tiến độ</option>
-                    <option value="">Đúng tiến độ</option>
-                    <option value="">Rủi ro cao</option>
-                    <option value="">Trễ hạn</option>
+                    <option value="on-schedule">Đúng tiến độ</option>
+                    <option value="risk">Rủi ro cao</option>
+                    <option value="late">Trễ hạn</option>
                 </select>
-                <p id="alert-progress-task" class="alert">Vui lòng chọn tiến độ</p>
+                <p id="alert-progress-task" class="alert"></p>
             </div>
             <div class="modal-foot">
                 <button id="btn-add-close" class="btn-cancel">Hủy</button>
-                <button class="btn-save">Lưu</button>
+                <button id="btn-save-add-task" class="btn-save">Lưu</button>
             </div>
         </div>
     </div>

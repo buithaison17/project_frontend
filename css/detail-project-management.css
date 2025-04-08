@@ -393,8 +393,12 @@ h2{
     background-color: #fc4456;
 }
 
+.hover{
+    cursor: pointer;
+}
+
 footer{
-    flex: 0.2;
+    height: 56px;
     background-color: #212529;
     color: white;
     display: flex;
@@ -420,7 +424,7 @@ footer{
 
 #modal-add-task .main-modal{
     width: 480px;
-    min-height: 834px;
+    min-height: fit-content;
     overflow-y: auto;
     border: 1px solid #dadada;
     border-radius: 8px;
@@ -684,7 +688,8 @@ footer{
     width: 200px;
     height: 40px;
     border: 1px solid #D0D5DD;
-    border-radius: 3px;
+    border-radius: 8px;
+    padding: 0 10px;
 }
 
 .remove-member{

@@ -14,7 +14,7 @@ idProject = +idProject;
 
 // Lấy dữ liệu trên local storage
 const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-const projects = JSON.parse(localStorage.getItem('projects')) || [];
+let projects = JSON.parse(localStorage.getItem('projects')) || [];
 const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
 // Lấy tên và mô tả của dự án
@@ -61,8 +61,37 @@ const btnExitDeleteElement = document.querySelector("#close-remove-modal");
 const btnCloseDeleteElement = document.querySelector("#btn-remove-cancel");
 const btnSaveDeleteElement = document.querySelector("#btn-remove-confirm");
 
+// Lấy modal thêm nhiệm vụ
+const modalAddTaskElement = document.querySelector("#modal-add-task");
+const btnExitAddTaskElement = document.querySelector("#close-add-modal");
+const btnCloseAddTaskElement = document.querySelector("#btn-add-close");
+const btnSaveAddTaskElement = document.querySelector('#btn-save-add-task');
+const inputNameTaskElement = document.querySelector("#name-task-input");
+const alertNameTaskElement = document.querySelector("#alert-name-task");
+const inputPersonInChargeElement = document.querySelector("#person-in-charge-input");
+const alertPersonTaskElement = document.querySelector("#alert-person-task");
+const inputStatusElement = document.querySelector("#status-input");
+const alertStatusTaskElement = document.querySelector("#alert-status-task");
+const inputDateStartElement = document.querySelector("#on-date-input");
+const alertDateStartElement = document.querySelector("#alert-on-date-task");
+const inputDateEndElement = document.querySelector("#late-date");
+const alertDateEndElement = document.querySelector("#alert-late-date-task");
+const inputPriorityElement = document.querySelector("#priority-input");
+const alertPriorityElement = document.querySelector("#alert-priority-task");
+const inputProgressElement = document.querySelector("#progress-input");
+const alertProgressElement = document.querySelector("#alert-progress-task");
+
+// Lấy phần tử danh sách các nhiệm vụ
+const btnViewTodoElement = document.querySelector("#view-todo");
+const btnViewProgressElement = document.querySelector("#view-progress");
+const btnViewPendingElement = document.querySelector("#view-pending");
+const btnViewDoneElement = document.querySelector("#view-done");
+
 // Để lưu hàm xử lý sửa nhiệm vụ
 let editHandler = null; 
+
+// Lưu trữ mảng projects tạm thời
+let tempProjects = [];
 
 // Hàm validate Email
 function isValidateEmail(email){
@@ -71,11 +100,27 @@ function isValidateEmail(email){
 }
 
 // Render danh sách member ở bên ngoài
-function renderMember(projects){
+function renderMember(projects) {
     let count = 0;
     const indexProject = projects.findIndex(project => project.id === idProject);
-    
-    
+    memberElement.innerHTML = projects[indexProject].member.map(member => {
+        if(count >= 2) return '';
+        count++;
+        const idUser = member.userId;
+        const avatar = accounts[accounts.findIndex(account => account.id === idUser)].fullName.slice(0,2).toUpperCase();
+        const fullName = accounts[accounts.findIndex(account => account.id === idUser)].fullName;
+        return `
+            <div class="member">
+                <div class="avatar-member">
+                    <p>${avatar}</p>
+                </div>
+                <div class="infor-member">
+                    <p class="name-member">${fullName}</p>
+                    <p class="position-member">${member.role}</p>
+                </div>
+            </div>`;
+    }).join(""); 
+
     const avatarMembers = document.querySelectorAll('.avatar-member');
     avatarMembers.forEach(el => {
         let r = Math.floor(Math.random() * 256);
@@ -90,9 +135,6 @@ renderMember(projects);
 // Render toàn bộ danh sách member
 function renderListMember(projects){
     const indexProject = projects.findIndex(project => project.id === idProject);
-    console.log(indexProject);
-    console.log(projects);
-    
     memberContainerElement.innerHTML = projects[indexProject].member.map((member, index) => {
         const indexMember = accounts.findIndex(account => account.id === member.userId);
         const fullNameMember = accounts[indexMember].fullName;
@@ -111,13 +153,14 @@ function renderListMember(projects){
                             <td class="member-right">
                                 <div>
                                     <select class="select-role">
-                                        <option value="${roleMember}">${roleMember}</option>
-
-                                        </select>
-                                        ${roleMember !== 'Project Owner' 
-                                            ? `<ion-icon onclick="removeMember(${index})" class="remove-member" name="trash-outline"></ion-icon>` 
-                                            : ''
-                                        }
+                                        ${['Project Owner', 'Developer', 'Tester'].map(role => 
+                                        `<option value="${role}" ${role === roleMember ? 'selected disabled' : ''}>${role}</option>`
+                                        ).join('')}
+                                    </select>
+                                    ${roleMember !== 'Project Owner' 
+                                        ? `<ion-icon onclick="removeMember(${index})" class="remove-member" name="trash-outline"></ion-icon>` 
+                                        : ''
+                                    }
                                 </div>
                             </td>
                         </tr>`
@@ -135,6 +178,8 @@ function renderListMember(projects){
 // Đóng modal xem toàn bộ thành viên
 function closeViewMember(){
     modalViewMember.style.display = 'none';
+    renderMember(projects);
+    renderListMember(projects);
 }
 
 btnViewExitElement.addEventListener('click', closeViewMember);
@@ -144,6 +189,13 @@ btnViewCloseElement.addEventListener('click', closeViewMember);
 btnViewMemberElement.addEventListener('click', function(){
     modalViewMember.style.display = 'flex';
     renderListMember(projects);
+})
+
+// Lưu chỉnh sửa modal thêm thành viên
+btnViewSaveElement.addEventListener('click', function(){
+    localStorage.setItem('projects', JSON.stringify(tempProjects));
+    projects = JSON.parse(localStorage.getItem('projects'));
+    closeViewMember();
 })
 
 // Đóng modal thêm thành viên
@@ -205,25 +257,30 @@ btnSaveAddMemberElement.addEventListener('click', function(){
 
    projects[indexCurrentProject].member.push(newMember);
    localStorage.setItem('projects', JSON.stringify(projects));
+   tempProjects = JSON.parse(localStorage.getItem('projects'));
    renderMember(projects);
    closeAddMember();
 })
 
 // Xóa thành viên
+let memberToRemoveIndex = null;
+
 function closeDeleteModal(){
     modalDeleleElement.style.display = 'none';
-}
+}    
 
 function removeMember(index){
     modalDeleleElement.style.display = 'flex';
+    memberToRemoveIndex = index
 
     btnExitDeleteElement.addEventListener('click', closeDeleteModal)
     btnCloseDeleteElement.addEventListener('click', closeDeleteModal)
 
     btnSaveDeleteElement.addEventListener('click', function(){
+        if(memberToRemoveIndex === null) return;
         const indexProject = projects.findIndex(project => project.id === idProject);
-        const tempProjects = JSON.parse(localStorage.getItem('projects'));
-        tempProjects[indexProject].splice(indexProject, 1);
+        tempProjects = JSON.parse(localStorage.getItem('projects'));
+        tempProjects[indexProject].member.splice(index, 1);
         renderMember(tempProjects);
         renderListMember(tempProjects);
         closeDeleteModal();
@@ -245,25 +302,163 @@ function writeNameContent(){
 
 writeNameContent();
 
-// Lấy modal thêm nhiệm vụ
-const modalAddTaskElement = document.querySelector("#modal-add-task");
-const btnExitAddTaskElement = document.querySelector("#close-add-modal");
-const btnCloseAddTaskElement = document.querySelector("#btn-add-close");
-
 // Thêm nhiệm vụ
 function addTask(){
-    modalAddTaskElement.style.display = 'flex';
+    let check = true;
+
+    if(inputNameTaskElement.value.trim() === ''){
+        inputNameTaskElement.classList.add('wrong');
+        alertNameTaskElement.textContent = 'Vui lòng nhập tên nhiệm vụ';
+        check = false;
+    }
+    else if(tasks.some(task => task.taskName.toLowerCase() === inputNameTaskElement.value.trim().toLowerCase())){
+        inputNameTaskElement.classList.add('wrong');
+        alertNameTaskElement.textContent = 'Nhiệm vụ đã tồn tại';
+        check = false;
+    }
+    else{
+        inputNameTaskElement.classList.remove('wrong');
+        alertNameTaskElement.textContent = '';
+    }
+
+    if(inputPersonInChargeElement.value === ''){
+        inputPersonInChargeElement.classList.add('wrong');
+        alertPersonTaskElement.textContent = 'Vui lòng chọn người phụ trách';
+        check = false;
+    }
+    else{
+        inputPersonInChargeElement.classList.remove('wrong');
+        alertPersonTaskElement.textContent = '';
+    }
+
+    if(inputStatusElement.value === ''){
+        inputStatusElement.classList.add('wrong');
+        alertStatusTaskElement.textContent = 'Vui lòng chọn trạng thái';
+        check = false;
+    }
+    else{
+        inputStatusElement.classList.remove('wrong');
+        alertStatusTaskElement.textContent = '';
+    }
+
+    if(inputDateStartElement.value === ''){
+        inputDateStartElement.classList.add('wrong');
+        alertDateStartElement.textContent = 'Vui lòng chọn ngày bắt đầu';
+        check = false;
+    }
+    else{
+        inputDateStartElement.classList.remove('wrong');
+        alertDateStartElement.textContent = '';
+    }
+
+    if(inputDateEndElement.value === ''){
+        inputDateEndElement.classList.add('wrong');
+        alertDateEndElement.textContent = 'Vui lòng chọn ngày kết thúc';
+        check = false;
+    }
+    else if(new Date(inputDateStartElement.value) > new Date(inputDateEndElement.value)){
+        inputDateEndElement.classList.add('wrong');
+        alertDateEndElement.textContent = 'Ngày kết thúc không được trước ngày bắt đầu';
+        check = false;
+    }
+    else{
+        inputDateEndElement.classList.remove('wrong');
+        alertDateEndElement.textContent = '';
+    }
+
+    if(inputPriorityElement.value === ''){
+        inputPriorityElement.classList.add('wrong');
+        alertPriorityElement.textContent = 'Vui lòng chọn độ ưu tiên';
+        check = false;
+    }
+    else{
+        inputPriorityElement.classList.remove('wrong');
+        alertPriorityElement.textContent = '';
+    }
+    
+
+    if(inputProgressElement.value === ''){
+        inputProgressElement.classList.add('wrong');
+        alertProgressElement.textContent = 'Vui lòng chọn tiến độ';
+        check = false;
+    }
+    else{
+        inputProgressElement.classList.remove('wrong');
+        alertProgressElement.textContent = '';
+    }
+
+    if(check){
+        const newTask = {
+            id: Math.ceil(Math.random()*1000000),
+            taskName: inputNameTaskElement.value.trim(),
+            assigneeId: accounts[indexUser].id,
+            projectId: idProject,
+            asignDate: inputDateStartElement.value,
+            dueDate: inputDateEndElement.value,
+            priority: inputPriorityElement.value,
+            progress: inputProgressElement.value,
+            status: inputStatusElement.value,
+        }    
+        tasks.push(newTask);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        closeAddTaskModal();            
+    }
 }
 
-btnAddTaskElement.addEventListener('click', addTask);
+btnSaveAddTaskElement.addEventListener("click", addTask);
+
+btnAddTaskElement.addEventListener('click', function(){
+    modalAddTaskElement.style.display = 'flex';
+    let htmls = `<option value="">Chọn trạng thái</option>`
+    const indexProject = projects.findIndex(project => project.id === idProject);
+    htmls += projects[indexProject].member.map(member => {
+        const indexMember = accounts.findIndex(account => account.id === member.userId);
+        const fullNameMember = accounts[indexMember].fullName;
+        return `<option value="${member.userId}">${fullNameMember}</option>`        
+    }).join("");
+
+    inputPersonInChargeElement.innerHTML = htmls;
+    
+})
 
 // Đóng modal thêm nhiệm vụ
 function closeAddTaskModal(){
     modalAddTaskElement.style.display = 'none';
+    
+    inputNameTaskElement.value = '';
+    inputNameTaskElement.classList.remove('wrong');
+    alertNameTaskElement.textContent = '';
+
+    inputPersonInChargeElement.value = '';
+    inputPersonInChargeElement.classList.remove('wrong');
+    alertPersonTaskElement.textContent = '';
+
+    inputStatusElement.value = '';
+    inputStatusElement.classList.remove('wrong');
+    alertStatusTaskElement.textContent = '';
+
+    inputDateStartElement.value = '';
+    inputDateStartElement.classList.remove('wrong');
+    alertDateStartElement.textContent = '';
+
+        
+    inputDateEndElement.value = '';
+    inputDateEndElement.classList.remove('wrong');
+    alertDateEndElement.textContent = '';
+
+        
+    inputPriorityElement.value = '';
+    inputPriorityElement.classList.remove('wrong');
+    alertPriorityElement.textContent = '';
+
+    inputProgressElement.value = '';
+    inputProgressElement.classList.remove('wrong');
+    alertProgressElement.textContent = '';
 }
 
 btnExitAddTaskElement.addEventListener('click', closeAddTaskModal);
 btnCloseAddTaskElement.addEventListener('click', closeAddTaskModal);
+
 
 // Đăng xuất
 btnLogoutElement.addEventListener('click', function(){

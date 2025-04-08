@@ -77,6 +77,8 @@ function closeAddProject(){
     inputDescriptionProjectElement.value = '';
     alerNameProjectElement.textContent = '';
     inputNameProjectElement.classList.remove('wrong');
+    editingIndexProject = null;
+    editHandler = null;
 }
 
 btnAddCancelElement.addEventListener('click', closeAddProject);
@@ -162,12 +164,19 @@ function closeModalDelete(){
 }
 
 // Hàm xóa project
+let projectIndexToDelete = null;
+
 function removeProject(index){
     modalDeleteElement.style.display = 'flex';
+    projectIndexToDelete = index
+
     btnRemoveCloseModal.addEventListener('click', closeModalDelete);
     btnRemoveCancelModal.addEventListener('click', closeModalDelete);
+    
     btnRemoveConfirmModal.addEventListener('click', function(){
-       const idProject = myListProject[index].id
+        if(projectIndexToDelete === null) return;
+       
+        const idProject = myListProject[index].id
        const indexProject = projects.findIndex(project => project.id === idProject);
        projects.splice(indexProject, 1);
        
@@ -176,6 +185,7 @@ function removeProject(index){
         }
 
        localStorage.setItem('projects', JSON.stringify(projects));
+       projectIndexToDelete = null;
        getProjects();
        renderButton();
        closeModalDelete();
