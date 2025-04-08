@@ -48,7 +48,18 @@ const alertRoleMemberElement = document.querySelector("#alert-role-member");
 
 // Lấy các phần tử trong danh sách thành viên
 const memberElement = document.querySelector("#list-member");
-const btnViewMember = document.querySelector("#view-all-member");
+const btnViewMemberElement = document.querySelector("#view-all-member");
+const modalViewMember = document.querySelector("#modal-view-member");
+const btnViewExitElement = document.querySelector("#close-view-modal");
+const btnViewCloseElement = document.querySelector("#btn-view-close");
+const btnViewSaveElement = document.querySelector("#btn-view-save");
+const memberContainerElement = document.querySelector("#member-container");
+
+// Lấy phần tử xác nhận xóa thành viên
+const modalDeleleElement = document.querySelector("#modal-delete");
+const btnExitDeleteElement = document.querySelector("#close-remove-modal");
+const btnCloseDeleteElement = document.querySelector("#btn-remove-cancel");
+const btnSaveDeleteElement = document.querySelector("#btn-remove-confirm");
 
 // Để lưu hàm xử lý sửa nhiệm vụ
 let editHandler = null; 
@@ -59,29 +70,80 @@ function isValidateEmail(email){
     return(regex.test(email));
 }
 
-function renderMember(){
-    const indexCurrentProject = projects.findIndex(project => project.id);
-    memberElement.innerHTML = projects[indexCurrentProject].member.map(member => {
-        const idUser = member.userId
-        const avatar = accounts[accounts.findIndex(account => account.id === idUser)].fullName.slice(0,2);
-        const fullName = accounts[accounts.findIndex(account => account.id === idUser)].fullName;
-        return `<div class="member">
-                        <div class="avatar-member">
-                            <p>${avatar}</p>
-                        </div>
-                        <div class="infor-member">
-                            <p class="name-member">${fullName}</p>
-                            <p class="position-member">${member.role}</p>
-                        </div>
-                    </div>`
-    }).join("");    
+// Render danh sách member ở bên ngoài
+function renderMember(projects){
+    let count = 0;
+    const indexProject = projects.findIndex(project => project.id === idProject);
+    
+    
+    const avatarMembers = document.querySelectorAll('.avatar-member');
+    avatarMembers.forEach(el => {
+        let r = Math.floor(Math.random() * 256);
+        let g = Math.floor(Math.random() * 256);
+        let b = Math.floor(Math.random() * 256);
+        el.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    });
 }
 
-renderMember();
+renderMember(projects);
+
+// Render toàn bộ danh sách member
+function renderListMember(projects){
+    const indexProject = projects.findIndex(project => project.id === idProject);
+    console.log(indexProject);
+    console.log(projects);
+    
+    memberContainerElement.innerHTML = projects[indexProject].member.map((member, index) => {
+        const indexMember = accounts.findIndex(account => account.id === member.userId);
+        const fullNameMember = accounts[indexMember].fullName;
+        const emailMember = accounts[indexMember].email;
+        const roleMember = member.role;
+        return `<tr class="member">
+                            <td class="member-left">
+                                <div class="avatar-member">
+                                    <p>${fullNameMember.slice(0,2).toUpperCase()}</p>
+                                </div>
+                                <div class="infor-member">
+                                    <p class="name-member">${fullNameMember}</p>
+                                    <p class="email-member">${emailMember}</p>
+                                </div>
+                            </td>
+                            <td class="member-right">
+                                <div>
+                                    <select class="select-role">
+                                        <option value="${roleMember}">${roleMember}</option>
+
+                                        </select>
+                                        ${roleMember !== 'Project Owner' 
+                                            ? `<ion-icon onclick="removeMember(${index})" class="remove-member" name="trash-outline"></ion-icon>` 
+                                            : ''
+                                        }
+                                </div>
+                            </td>
+                        </tr>`
+    }).join("");
+
+    const avatarMembers = document.querySelectorAll('.avatar-member');
+    avatarMembers.forEach(el => {
+        let r = Math.floor(Math.random() * 256);
+        let g = Math.floor(Math.random() * 256);
+        let b = Math.floor(Math.random() * 256);
+        el.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    });
+}
+
+// Đóng modal xem toàn bộ thành viên
+function closeViewMember(){
+    modalViewMember.style.display = 'none';
+}
+
+btnViewExitElement.addEventListener('click', closeViewMember);
+btnViewCloseElement.addEventListener('click', closeViewMember);
 
 // Xem toàn bộ danh sách thành viên
-btnViewMember.addEventListener('click', function(){
-    
+btnViewMemberElement.addEventListener('click', function(){
+    modalViewMember.style.display = 'flex';
+    renderListMember(projects);
 })
 
 // Đóng modal thêm thành viên
@@ -121,7 +183,7 @@ btnSaveAddMemberElement.addEventListener('click', function(){
    }
 
     const idMember = accounts[indexMember].id;
-    const indexCurrentProject = projects.findIndex(project => project.id);
+    const indexCurrentProject = projects.findIndex(project => project.id === idProject);
     const currentProject = projects[indexCurrentProject];
 
     if (currentProject.member.some(member => member.userId === idMember)) {
@@ -143,9 +205,30 @@ btnSaveAddMemberElement.addEventListener('click', function(){
 
    projects[indexCurrentProject].member.push(newMember);
    localStorage.setItem('projects', JSON.stringify(projects));
-
+   renderMember(projects);
+   closeAddMember();
 })
-   
+
+// Xóa thành viên
+function closeDeleteModal(){
+    modalDeleleElement.style.display = 'none';
+}
+
+function removeMember(index){
+    modalDeleleElement.style.display = 'flex';
+
+    btnExitDeleteElement.addEventListener('click', closeDeleteModal)
+    btnCloseDeleteElement.addEventListener('click', closeDeleteModal)
+
+    btnSaveDeleteElement.addEventListener('click', function(){
+        const indexProject = projects.findIndex(project => project.id === idProject);
+        const tempProjects = JSON.parse(localStorage.getItem('projects'));
+        tempProjects[indexProject].splice(indexProject, 1);
+        renderMember(tempProjects);
+        renderListMember(tempProjects);
+        closeDeleteModal();
+    })
+}
 
 // Hiển thị menu thêm thành viên
 btnAddMemberElement.addEventListener('click', function(){

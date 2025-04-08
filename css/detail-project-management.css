@@ -101,17 +101,6 @@ header{
     gap: 5px;
 }
 
-.avatar-member{
-    width: 40px;
-    height: 40px;
-    background-color: aqua;
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FFFFFF;
-}
-
 .avatar-member p{
     font-size: 20px;
 }
@@ -539,6 +528,10 @@ footer{
     border-top: 1px solid #dadada;
 }
 
+#modal-delete{
+    z-index: 100;
+}
+
 #modal-delete .main-modal{
     width: 480px;
     height: fit-content;
@@ -566,6 +559,7 @@ footer{
     align-items: center;
     margin: 15px 22px 8px 0;
     gap: 23px;
+    padding-right: 15px;
 }
 
 #modal-delete .modal-foot .btn-cancel{
@@ -612,30 +606,92 @@ footer{
     background-color: #FFFFFF;
     padding: 15px;
     border-radius: 8px;
+    animation: scale-up-center 0.2s ease-out forwards;
+
 }
 
-#modal-view-member .modal-body{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-#modal-view-member .modal-body .member-container{
+#modal-view-member .modal-body {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    align-items: flex-start;
+    padding: 16px;
+    gap: 12px;
 }
 
-#modal-view-member .modal-body .list-member{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.text-center{
+    text-align: center;
+    width: 40%;
+    padding: 10px 0;
 }
 
-#modal-view-member .modal-body .member{
+#modal-view-member .modal-body table{
+    width: 100%;
+    font-size: 20px;
+    font-weight: 400;
+    color: #212529;
+}
+
+.avatar-member {
+    width: 40px;
+    height: 40px;
+    background-color: #1976d2;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.member-left{
     display: flex;
     gap: 10px;
+    padding: 10px;
+}
+
+.member-right{
+    
+}
+
+.name-member{
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 19.2px;
+    color: #212529;
+}
+
+.email-member{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    color: #212529BF;
+}
+
+.member-right{
+
+}
+
+.member-right div{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    margin-left: 60px;
+}
+
+.select-role{
+    width: 200px;
+    height: 40px;
+    border: 1px solid #D0D5DD;
+    border-radius: 3px;
+}
+
+.remove-member{
+    color: red;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
 
 @-webkit-keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes scale-up-center{0%{-webkit-transform:scale(.5);transform:scale(.5)}100%{-webkit-transform:scale(1);transform:scale(1)}}

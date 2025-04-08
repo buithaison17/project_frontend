@@ -33,7 +33,7 @@ const listProjectElement = document.querySelector("tbody");
 // Phần tử liên quan đến phân trang
 let totalPage = 0;
 let currentPage = 1;
-let myListProject;
+let myListProject = [];
 const btnPagesElement = document.querySelector("#page-number");
 const btnPrevElement = document.querySelector("#btn-prev");
 const btnNextElement = document.querySelector("#btn-next");
@@ -167,17 +167,18 @@ function removeProject(index){
     btnRemoveCloseModal.addEventListener('click', closeModalDelete);
     btnRemoveCancelModal.addEventListener('click', closeModalDelete);
     btnRemoveConfirmModal.addEventListener('click', function(){
-        const indexProjectDelete = projects.findIndex(project => project.id === myListProject[index].id);
-        projects.splice(indexProjectDelete, 1);
-        localStorage.setItem('projects', JSON.stringify(projects));
-        
-        if (myListProject.length % 4 === 0 && currentPage > 1) {
-            currentPage--;
+       const idProject = myListProject[index].id
+       const indexProject = projects.findIndex(project => project.id === idProject);
+       projects.splice(indexProject, 1);
+       
+       if (myListProject.length % 4 === 0 && currentPage > 1) {
+        currentPage--;
         }
-        
-        getProjects();
-        renderButton();
-        closeModalDelete();                
+
+       localStorage.setItem('projects', JSON.stringify(projects));
+       getProjects();
+       renderButton();
+       closeModalDelete();
     })
 }
 
@@ -220,9 +221,12 @@ btnAddSaveElement.addEventListener('click', addProject);
 // Sửa dự án
 function editProject(index){
     modalAddProject.style.display = 'flex';
-    inputNameProjectElement.value = projects[index].projectName;
-    inputDescriptionProjectElement.value = projects[index].description;
-    
+
+    const idProject = myListProject[index].id
+    const indexProject = projects.findIndex(project => project.id === idProject);
+
+    inputNameProjectElement.value = projects[indexProject].projectName;
+    inputDescriptionProjectElement.value = projects[indexProject].description;
     btnAddSaveElement.removeEventListener('click', addProject);
 
     editHandler = function(){
@@ -240,10 +244,11 @@ function editProject(index){
                 return;
         }
 
-        projects[index].projectName = inputNameProjectElement.value.trim();
-        projects[index].description = inputDescriptionProjectElement.value.trim();
-        localStorage.setItem('projects', JSON.stringify(projects));
 
+
+        projects[indexProject].projectName = inputNameProjectElement.value.trim();
+        projects[indexProject].description = inputDescriptionProjectElement.value.trim();
+        localStorage.setItem('projects', JSON.stringify(projects));
         btnAddSaveElement.removeEventListener('click', editHandler);
         btnAddSaveElement.addEventListener('click', addProject);
 
@@ -257,8 +262,8 @@ function editProject(index){
 
 // Xem chi tiết project
 function viewProject(index){
-    localStorage.setItem('idProject', projects[index].id);
-    window.location.href = "detail-project-management.html";
+    localStorage.setItem('idProject', myListProject[index].id);
+    window.location.href = 'detail-project-management.html';
 }
 
 projectsElement.addEventListener('click', function(){

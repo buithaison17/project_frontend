@@ -30,26 +30,7 @@
                     <button id="btn-add-member" class="btn-add-member">+ Thêm thành viên</button>
                 </div>
                 <div id="view-member" class="view-member">
-                    <div id="list-member" class="list-member">
-                        <div class="member">
-                            <div class="avatar-member">
-                                <p>AN</p>
-                            </div>
-                            <div class="infor-member">
-                                <p class="name-member">An Nguyễn</p>
-                                <p class="position-member">Project owner</p>
-                            </div>
-                        </div>
-                        <div class="member">
-                            <div class="avatar-member">
-                                <p>AN</p>
-                            </div>
-                            <div class="infor-member">
-                                <p class="name-member">An Nguyễn</p>
-                                <p class="role-member">Project owner</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="list-member" class="list-member"></div>
                     <div id="view-all-member" class="view-all-member">...</div>
                 </div>
             </div>            
@@ -123,7 +104,11 @@
                 <p id="alert-person-task" class="alert">Vui lòng chọn người phụ trách</p>
                 <label class="name-label" for="status-input">Trạng thái</label>
                 <select class="input" id="status-input">
-                    <option value=""></option>
+                    <option value="">Chọn trạng thái</option>
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Done">Done</option>
                 </select>
                 <p id="alert-status-task" class="alert">Vui lòng chọn trạng thái</p>
                 <label class="name-label" for="on-date-input">Ngày bắt đầu</label>
@@ -183,7 +168,7 @@
     </div>
 
     <div style="display: none;" id="modal-delete" class="modal-container">
-        <div class="main-modal">
+        <div id="main-modal" class="main-modal">
             <div class="modal-head">
                 <h2>Xác nhận xóa dự án</h2>
                 <ion-icon id="close-remove-modal" class="close-modal" name="close-outline"></ion-icon>
@@ -198,40 +183,28 @@
         </div>
     </div>
 
-    <div id="modal-view-member" class="modal-container">
+    <div style="display: none;" id="modal-view-member" class="modal-container">
         <div class="main-modal">
             <div class="modal-head">
                 <h2>Thành viên</h2>
-                <ion-icon id="close-remove-modal" class="close-modal" name="close-outline"></ion-icon>
+                <ion-icon id="close-view-modal" class="close-modal" name="close-outline"></ion-icon>
             </div>
             <div class="modal-body mt">
-                <div class="member-container">
-                    <h2>Thành viên</h2>
-                    <div class="list-member mt">
-                        <div class="member">
-                            <div class="avatar-member">
-                                <p>so</p>
-                            </div>
-                            <div class="infor-member">
-                                <p>Bùi Thái Sơn</p>
-                                <p>sonbui@gmail.com</p>
-                            </div>
-                        </div>
-                        <div class="member">
-                            <div class="avatar-member">
-                                <p>so</p>
-                            </div>
-                            <div class="infor-member">
-                                <p>Bùi Thái Sơn</p>
-                                <p>sonbui@gmail.com</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="member-container">
-                    <h2>Vai trò</h2>
-                    
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <td class="text-center">Thành viên</td>
+                            <td class="text-center">Vai trò</td>
+                        </tr>
+                    </thead>
+                    <tbody id="member-container" class="member-container">
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-foot">
+                <button id="btn-view-close" class="btn-cancel">Hủy</button>
+                <button id="btn-view-save" class="btn-save">Lưu</button>
             </div>
         </div>
     </div>
