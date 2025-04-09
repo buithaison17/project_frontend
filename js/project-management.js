@@ -193,7 +193,7 @@ function removeProject(index){
     })
 }
 
-// Thêm danh dự ấn
+// Thêm dự án
 function addProject(){
     let check = true;
 
@@ -215,6 +215,7 @@ function addProject(){
     if(inputDescriptionProjectElement.value === ''){
         alertDescriptionProjectElement.textContent = 'Mô tả dự án không được để trống'
         inputDescriptionProjectElement.classList.add('wrong');
+        check = false;
     }
     else{
         alertDescriptionProjectElement.textContent = '';

@@ -157,7 +157,7 @@ function renderListMember(projects){
                             </td>
                             <td class="member-right">
                                 <div>
-                                    <select class="select-role">
+                                    <select class="select-role" onchange="changeMemberRole(${index}, this.value)">
                                         ${['Project Owner', 'Developer', 'Tester'].map(role => 
                                         `<option value="${role}" ${role === roleMember ? 'selected disabled' : ''}>${role}</option>`
                                         ).join('')}
@@ -178,6 +178,14 @@ function renderListMember(projects){
         let b = Math.floor(Math.random() * 256);
         el.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
     });
+}
+
+// Thay đổi role
+function changeMemberRole(index, role){
+    tempProjects = projects;
+    const indexProject = tempProjects.findIndex(project => project.id === idProject);
+    tempProjects[indexProject].member[index].role = role;
+    renderMember(tempProjects);
 }
 
 // Đóng modal xem toàn bộ thành viên
@@ -452,6 +460,7 @@ function addTask(){
 
 btnSaveAddTaskElement.addEventListener("click", addTask);
 
+// Lấy danh sách thành viên khi thêm nhiệm vụ
 btnAddTaskElement.addEventListener('click', function(){
     modalAddTaskElement.style.display = 'flex';
     let htmls = `<option value="">Chọn trạng thái</option>`
