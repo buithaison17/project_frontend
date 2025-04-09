@@ -15,7 +15,7 @@ idProject = +idProject;
 // Lấy dữ liệu trên local storage
 const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
-const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
 // Lấy tên và mô tả của dự án
 const projectNameElement = document.querySelector("#project-name");
@@ -94,8 +94,9 @@ const listDoneElement = document.querySelector('[data-category="done"]');
 // Để lưu hàm xử lý sửa nhiệm vụ
 let editHandler = null; 
 
-// Lưu trữ mảng projects tạm thời
+// Lưu trữ mảng tạm thời
 let tempProjects = [];
+let tempTasks = [];
 
 // Hàm validate Email
 function isValidateEmail(email){
@@ -199,6 +200,8 @@ btnViewMemberElement.addEventListener('click', function(){
 btnViewSaveElement.addEventListener('click', function(){
     localStorage.setItem('projects', JSON.stringify(tempProjects));
     projects = JSON.parse(localStorage.getItem('projects'));
+    localStorage.setItem('tasks', JSON.stringify(tempTasks));
+    tasks = JSON.parse(localStorage.getItem('tasks'));
     closeViewMember();
 })
 
@@ -268,22 +271,18 @@ btnSaveAddMemberElement.addEventListener('click', function(){
         roleUserInviteElement.classList.add('wrong');
     }
 
-   const newMember = {
-    userId: idMember,
-    role: roleUserInviteElement.value,
-   }
+    if(check){
+        const newMember = {
+            userId: idMember,
+            role: roleUserInviteElement.value,
+        }
 
-//    Swal.fire({
-//     title: "Drag me!",
-//     icon: "success",
-//     draggable: true
-//   });
-
-   projects[indexCurrentProject].member.push(newMember);
-   localStorage.setItem('projects', JSON.stringify(projects));
-   tempProjects = JSON.parse(localStorage.getItem('projects'));
-   renderMember(projects);
-   closeAddMember();
+        projects[indexCurrentProject].member.push(newMember);
+        localStorage.setItem('projects', JSON.stringify(projects));
+        tempProjects = JSON.parse(localStorage.getItem('projects'));
+        renderMember(projects);
+        closeAddMember();
+    }
 })
 
 // Xóa thành viên
@@ -302,7 +301,18 @@ function removeMember(index){
 
     btnSaveDeleteElement.addEventListener('click', function(){
         if(memberToRemoveIndex === null) return;
+        
+        tempTasks = JSON.parse(localStorage.getItem("tasks"));
         const indexProject = projects.findIndex(project => project.id === idProject);
+        const idUserDelete = projects[indexProject].member[index].userId;
+        const taskDelete = tasks.filter(task => task.assigneeId === idUserDelete);
+        
+        for(let i = 0; i < taskDelete.length; i++){
+            const idTaskDelete = taskDelete[i].id;
+            const indexTaskDelete = tempTasks.findIndex(task => task.id === idTaskDelete);
+            tempTasks.splice(indexTaskDelete, 1);
+        }
+         
         tempProjects = JSON.parse(localStorage.getItem('projects'));
         tempProjects[indexProject].member.splice(index, 1);
         renderMember(tempProjects);
@@ -329,6 +339,8 @@ writeNameContent();
 // Thêm nhiệm vụ
 function addTask(){
     let check = true;
+    const todayDate = new Date();
+    let today = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
 
     if(inputNameTaskElement.value.trim() === ''){
         inputNameTaskElement.classList.add('wrong');
@@ -374,6 +386,10 @@ function addTask(){
         inputDateStartElement.classList.add('wrong');
         alertDateStartElement.textContent = 'Vui lòng chọn ngày bắt đầu';
         check = false;
+    }
+    else if(inputDateStartElement.value < today){
+        inputDateStartElement.classList.add('wrong');
+        alertDateStartElement.textContent = 'Ngày bắt đầu không hợp lệ';
     }
     else{
         inputDateStartElement.classList.remove('wrong');

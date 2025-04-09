@@ -429,6 +429,13 @@ footer{
     justify-content: center;
 }
 
+#modal-add-task,
+#modal-view-member,
+#modal-add-member,
+#modal-delete{
+    display: none;
+}
+
 #modal-add-task .main-modal{
     width: 480px;
     min-height: fit-content;
@@ -513,9 +520,16 @@ footer{
     background-color: #2a7fff;
 }
 
+#modal-add-member .main-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
 #modal-add-member .main-modal{
     width: 480px;
-    min-height: 345px;
+    min-height: fit-content;
     border-radius: 8px;
     background-color: #FFFFFF;
     padding: 10px;
@@ -543,8 +557,16 @@ footer{
     z-index: 100;
 }
 
+.modal-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #modal-delete .main-modal{
+    border-top: 1px solid #dadada;
     width: 480px;
+    padding: 15px;
     height: fit-content;
     border: 1px solid #dadada;
     background-color: white;
@@ -661,10 +683,6 @@ footer{
     padding: 10px;
 }
 
-.member-right{
-    
-}
-
 .name-member{
     font-weight: 400;
     font-size: 20px;
@@ -677,10 +695,6 @@ footer{
     font-size: 14px;
     line-height: 21px;
     color: #212529BF;
-}
-
-.member-right{
-
 }
 
 .member-right div{
