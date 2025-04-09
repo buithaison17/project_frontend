@@ -7,6 +7,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -142,7 +143,7 @@ h2{
 
 .feature{
     margin: 0 auto;
-    margin-top: 40px;
+    margin-top: 10px;
     width: 85%;
     display: flex;
     justify-content: space-between;
@@ -202,8 +203,11 @@ h2{
     border: 1px solid #dadada;
     padding: 10px;
     border-radius: 6px;
-    flex: 1;
     margin-bottom: 20px;
+}
+
+.scroll{
+    max-height: 350px;
     overflow-y: auto;
 }
 
@@ -255,14 +259,17 @@ h2{
 }
 
 .name-task{
+    width: 170px;
     font-weight: 400;
     font-size: 14.5px;
     line-height: 24px;
     border: 1px solid #dadada;
     padding-left: 15px;
+    text-align: left;
 }
 
 .person-in-charge{
+    width: 152px;
     text-align: center;
 }
 

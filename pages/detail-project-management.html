@@ -50,6 +50,7 @@
                 <input type="text" class="search-task" id="search-task" placeholder="Tìm kiếm nhiệm vụ">
             </div>
         </aside>
+       <div class="scroll">
         <aside class="list-task-container">
             <h3>Danh sách nhiệm vụ</h3>
             <table class="list-task">
@@ -64,90 +65,45 @@
                         <td class="border">Hành động</td>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="detail">
-                            <ion-icon class="hover" id="view-todo" name="caret-forward"></ion-icon>
-                            <p class="name">To Do</p>
-                        </td>
-                    </tr>
-                    <div id="list-todo">
-                        <tr class="list">
-                            <td class="name-task border">Soạn thảo đề cương</td>
-                            <td class="person-in-charge border">Son bui</td>
-                            <td class="border"><p class="high">Cao</p></td>
-                            <td class="date border">02 - 24</td>
-                            <td class="date border">02 - 27</td>
-                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
-                            <td class="border btn">
-                                <span class="btn-edit">Sửa</span>
-                                <span class="btn-remove">Xóa</span>
-                            </td>
-                        </tr>
-                    </div>
-                    <tr>
-                        <td class="detail">
-                            <ion-icon class="hover" id="view-progress" name="caret-forward"></ion-icon>
-                            <p class="name">In Progress</p>
-                        </td>
-                    </tr>
-                    <div id="list-inprogress">
-                        <tr class="list">
-                            <td class="name-task border">Soạn thảo đề cương</td>
-                            <td class="person-in-charge border">Son bui</td>
-                            <td class="border"><p class="high">Cao</p></td>
-                            <td class="date border">02 - 24</td>
-                            <td class="date border">02 - 27</td>
-                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
-                            <td class="border btn">
-                                <span class="btn-edit">Sửa</span>
-                                <span class="btn-remove">Xóa</span>
-                            </td>
-                        </tr>
-                    </div>
-                    <tr>
-                        <td class="detail">
-                            <ion-icon class="hover" id="view-pending" name="caret-forward"></ion-icon>
-                            <p class="name">Pending</p>
-                        </td>
-                    </tr>
-                    <div id="list-pending">
-                        <tr class="list">
-                            <td class="name-task border">Soạn thảo đề cương</td>
-                            <td class="person-in-charge border">Son bui</td>
-                            <td class="border"><p class="high">Cao</p></td>
-                            <td class="date border">02 - 24</td>
-                            <td class="date border">02 - 27</td>
-                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
-                            <td class="border btn">
-                                <span class="btn-edit">Sửa</span>
-                                <span class="btn-remove">Xóa</span>
-                            </td>
-                        </tr>
-                    </div>
-                    <tr>
-                        <td class="detail">
-                            <ion-icon id="view-done" class="hover" name="caret-forward"></ion-icon>
-                            <p class="name">Done</p>
-                        </td>
-                    </tr>
-                    <div id="list-done">
-                        <tr class="list">
-                            <td class="name-task border">Soạn thảo đề cương</td>
-                            <td class="person-in-charge border">Son bui</td>
-                            <td class="border"><p class="high">Cao</p></td>
-                            <td class="date border">02 - 24</td>
-                            <td class="date border">02 - 27</td>
-                            <td class="border"><p class="on-schedule">Đúng tiến độ</p></td>
-                            <td class="border btn">
-                                <span class="btn-edit">Sửa</span>
-                                <span class="btn-remove">Xóa</span>
-                            </td>
-                        </tr>
-                    </div>
+                <tr>
+                    <td class="detail">
+                        <ion-icon class="hover" id="view-todo" name="caret-forward"></ion-icon>
+                        <p class="name">To Do</p>
+                    </td>
+                </tr>
+                <tbody data-category="todo">
+                    
+                </tbody>
+                <tr>
+                    <td class="detail">
+                        <ion-icon class="hover" id="view-progress" name="caret-forward"></ion-icon>
+                        <p class="name">In Progress</p>
+                    </td>
+                </tr>
+                <tbody data-category="in-progress">
+
+                </tbody>
+                <tr>
+                    <td class="detail">
+                        <ion-icon class="hover" id="view-pending" name="caret-forward"></ion-icon>
+                        <p class="name">Pending</p>
+                    </td>
+                </tr>
+                <tbody data-category="pending">
+
+                </tbody>
+                <tr>
+                    <td class="detail">
+                        <ion-icon class="hover" id="view-done" name="caret-forward"></ion-icon>
+                        <p class="name">Done</p>
+                    </td>
+                </tr>
+                <tbody data-category="done">
+
                 </tbody>
             </table>
         </aside>
+       </div>
         <footer>&copy; 2025 Team management. All rights reverved.</footer>
     </div>
 
@@ -163,9 +119,7 @@
                 <p id="alert-name-task" class="alert"></p>
                 <label class="name-label" for="person-in-charge-input">Người phụ trách</label>
                 <select class="input" id="person-in-charge-input">
-                    <option value="">Người phụ trách</option>
-                    <option value="Sơn bùi">sơn bùi</option>
-                    <option value="ss">ss</option>
+                    
                 </select>
                 <p id="alert-person-task" class="alert"></p>
                 <label class="name-label" for="status-input">Trạng thái</label>
@@ -188,7 +142,7 @@
                     <option value="">Độ ưu tiên</option>
                     <option value="low">Thấp</option>
                     <option value="medium">Trung bình</option>
-                    <option value="hight">Cao</option>
+                    <option value="high">Cao</option>
                 </select>
                 <p id="alert-priority-task" class="alert"></p>
                 <label for="progress-input" class="name-label">Tiến độ</label>

@@ -69,6 +69,7 @@ localStorage.removeItem("idProject");
 
 // Lấy phần tử thông báo lỗi khi thêm dự án
 const alerNameProjectElement = document.querySelector("#alert-name-project");
+const alertDescriptionProjectElement = document.querySelector("#alert-description-project");
 
 // Đóng modal thêm dự án
 function closeAddProject(){
@@ -194,36 +195,52 @@ function removeProject(index){
 
 // Thêm danh dự ấn
 function addProject(){
+    let check = true;
+
     if(inputNameProjectElement.value.trim() === ''){
         alerNameProjectElement.textContent = 'Tên dự án không được để trống';
         inputNameProjectElement.classList.add('wrong');
-        return;
+        check = false;
     }
-
-    if(myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.trim().toLowerCase())){
+    else if(myListProject.some(project => project.projectName.toLowerCase() === inputNameProjectElement.value.trim().toLowerCase())){
         alerNameProjectElement.textContent = 'Dự án đã tồn tại';
         inputNameProjectElement.classList.add('wrong');
-        return;
+        check = false;
+    }
+    else{
+        alerNameProjectElement.textContent = '';
+        inputNameProjectElement.classList.remove('wrong');
     }
 
-    const newProject = {
-        id: Math.ceil(Math.random()*1000000),
-        projectName: inputNameProjectElement.value.trim(),
-        description: inputDescriptionProjectElement.value,
-        member: [
-            {
-                userId: currentUserId,
-                role: 'Project Owner'
-            }
-        ]
+    if(inputDescriptionProjectElement.value === ''){
+        alertDescriptionProjectElement.textContent = 'Mô tả dự án không được để trống'
+        inputDescriptionProjectElement.classList.add('wrong');
+    }
+    else{
+        alertDescriptionProjectElement.textContent = '';
+        inputDescriptionProjectElement.classList.remove('wrong');
     }
 
-    projects.push(newProject);
-    localStorage.setItem('projects', JSON.stringify(projects));
-
-    getProjects();
-    renderButton();
-    closeAddProject();
+    if(check){
+        const newProject = {
+            id: Math.ceil(Math.random()*1000000),
+            projectName: inputNameProjectElement.value.trim(),
+            description: inputDescriptionProjectElement.value,
+            member: [
+                {
+                    userId: currentUserId,
+                    role: 'Project Owner'
+                }
+            ]
+        }
+    
+        projects.push(newProject);
+        localStorage.setItem('projects', JSON.stringify(projects));
+    
+        getProjects();
+        renderButton();
+        closeAddProject();
+    }
 }
 
 btnAddSaveElement.addEventListener('click', addProject);
@@ -240,31 +257,48 @@ function editProject(index){
     btnAddSaveElement.removeEventListener('click', addProject);
 
     editHandler = function(){
+        const check = true;
+
         if(inputNameProjectElement.value.trim() === ''){
             alerNameProjectElement.textContent = 'Tên dự án không được để trống';
             inputNameProjectElement.classList.add('wrong');
-            return;
+            check = false;
         }
-
-        if (myListProject.some(proj => 
+        else if (myListProject.some(proj => 
             proj.projectName.toLowerCase() === inputNameProjectElement.value.trim().toLowerCase() &&
             proj.id !== projects[index].id)) {
-                alerNameProjectElement.textContent = 'Tên dự án đã tồn tại';
-                inputNameProjectElement.classList.add('wrong');
-                return;
+            
+            alerNameProjectElement.textContent = 'Tên dự án đã tồn tại';
+            inputNameProjectElement.classList.add('wrong');
+            check = false;
+        }
+        else{
+            alerNameProjectElement.textContent = '';
+            inputNameProjectElement.classList.remove('wrong');
         }
 
+        if(inputDescriptionProjectElement.value === ''){
+            alertDescriptionProjectElement.textContent = 'Mô tả dự án không được để trống';
+            inputDescriptionProjectElement.classList.add('wrong');
+            check = false;
+        }
+        else{
+            alertDescriptionProjectElement.textContent = '';
+            inputDescriptionProjectElement.classList.remove('wrong');
+        }
+        
+        if(check){
+            projects[indexProject].projectName = inputNameProjectElement.value.trim();
+            projects[indexProject].description = inputDescriptionProjectElement.value.trim();
+            localStorage.setItem('projects', JSON.stringify(projects));
+            btnAddSaveElement.removeEventListener('click', editHandler);
+            btnAddSaveElement.addEventListener('click', addProject);
 
-
-        projects[indexProject].projectName = inputNameProjectElement.value.trim();
-        projects[indexProject].description = inputDescriptionProjectElement.value.trim();
-        localStorage.setItem('projects', JSON.stringify(projects));
-        btnAddSaveElement.removeEventListener('click', editHandler);
-        btnAddSaveElement.addEventListener('click', addProject);
-
-        getProjects();
-        renderButton();
-        closeAddProject();
+            getProjects();
+            renderButton();
+            closeAddProject();
+        }
+        
     };
 
     btnAddSaveElement.addEventListener('click', editHandler);

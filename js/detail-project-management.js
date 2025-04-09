@@ -86,6 +86,10 @@ const btnViewTodoElement = document.querySelector("#view-todo");
 const btnViewProgressElement = document.querySelector("#view-progress");
 const btnViewPendingElement = document.querySelector("#view-pending");
 const btnViewDoneElement = document.querySelector("#view-done");
+const listTodoElement = document.querySelector('[data-category="todo"]');
+const listProgressElement = document.querySelector('[data-category="in-progress"]');
+const listPendingElement = document.querySelector('[data-category="pending"]');
+const listDoneElement = document.querySelector('[data-category="done"]');
 
 // Để lưu hàm xử lý sửa nhiệm vụ
 let editHandler = null; 
@@ -214,25 +218,30 @@ btnCancelAddMemberElement.addEventListener('click', closeAddMember)
 
 // Thêm thành viên
 btnSaveAddMemberElement.addEventListener('click', function(){
+    let check = true;
     const indexMember = accounts.findIndex(account => account.email === emailUserInviteInputElement.value.trim());
 
     if(emailUserInviteInputElement.value === ''){
-        alertEmailMemberElement.textContent = 'Vui lòng nhập email thành viên'
         emailUserInviteInputElement.classList.add('wrong');
-        return;
+        alertEmailMemberElement.textContent = 'Vui lòng nhập email thành viên muốn thêm'
+        check = false;
     }
-
-    if(!isValidateEmail(emailUserInviteInputElement.value)){
-        alertEmailMemberElement.textContent = 'Email không hợp lệ';
+    else if(!isValidateEmail(emailUserInviteInputElement.value)){
         emailUserInviteInputElement.classList.add('wrong');
-        return;
+        alertEmailMemberElement.textContent = 'Email nhập không hợp lệ';
+        check = false;
     }
-
-    if(indexMember === -1){
-        alertEmailMemberElement.textContent = 'Email không tồn tại';
+    else if(indexMember === -1){
         emailUserInviteInputElement.classList.add('wrong');
-        return;
-   }
+        alertEmailMemberElement.textContent = 'Tài khoản chưa được đăng kí';
+        check = false;
+    }
+    else{
+        emailUserInviteInputElement.classList.remove('wrong');
+        alertEmailMemberElement.textContent = '';
+    }
+   
+    if(!check) return;
 
     const idMember = accounts[indexMember].id;
     const indexCurrentProject = projects.findIndex(project => project.id === idProject);
@@ -241,19 +250,34 @@ btnSaveAddMemberElement.addEventListener('click', function(){
     if (currentProject.member.some(member => member.userId === idMember)) {
         alertEmailMemberElement.textContent = 'Thành viên đã tồn tại';
         emailUserInviteInputElement.classList.add('wrong');
-        return;
+        check = false;
     }
+    else{
+        emailUserInviteInputElement.classList.remove('wrong');
+        alertEmailMemberElement.textContent = '';
+    }
+   
 
     if(roleUserInviteElement.value === ''){
         alertRoleMemberElement.textContent = 'Vui lòng chọn vai trò của thành viên';
         roleUserInviteElement.classList.add('wrong');
-        return;
+        check = false;
+    }
+    else{
+        alertRoleMemberElement.textContent = 'Vui lòng chọn vai trò của thành viên';
+        roleUserInviteElement.classList.add('wrong');
     }
 
    const newMember = {
     userId: idMember,
     role: roleUserInviteElement.value,
    }
+
+//    Swal.fire({
+//     title: "Drag me!",
+//     icon: "success",
+//     draggable: true
+//   });
 
    projects[indexCurrentProject].member.push(newMember);
    localStorage.setItem('projects', JSON.stringify(projects));
@@ -310,6 +334,11 @@ function addTask(){
         inputNameTaskElement.classList.add('wrong');
         alertNameTaskElement.textContent = 'Vui lòng nhập tên nhiệm vụ';
         check = false;
+    }
+    else if(inputNameTaskElement.value.length <= 8){
+        inputNameTaskElement.classList.add('wrong');
+        alertNameTaskElement.textContent = 'Tên nhiệm vụ phải có ít nhất 8 kí tự';
+        check = false
     }
     else if(tasks.some(task => task.taskName.toLowerCase() === inputNameTaskElement.value.trim().toLowerCase())){
         inputNameTaskElement.classList.add('wrong');
@@ -391,7 +420,7 @@ function addTask(){
         const newTask = {
             id: Math.ceil(Math.random()*1000000),
             taskName: inputNameTaskElement.value.trim(),
-            assigneeId: accounts[indexUser].id,
+            assigneeId: +inputPersonInChargeElement.value,
             projectId: idProject,
             asignDate: inputDateStartElement.value,
             dueDate: inputDateEndElement.value,
@@ -459,6 +488,122 @@ function closeAddTaskModal(){
 btnExitAddTaskElement.addEventListener('click', closeAddTaskModal);
 btnCloseAddTaskElement.addEventListener('click', closeAddTaskModal);
 
+// Xem các task to do
+btnViewTodoElement.addEventListener('click', function(){
+    if(btnViewTodoElement.getAttribute('name') === 'caret-forward'){
+        btnViewTodoElement.setAttribute('name', 'caret-down');
+        
+        const listTodo = tasks.filter(task => task.projectId === idProject && task.status === 'To Do');
+        
+        listTodoElement.innerHTML = listTodo.map((task, index) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${index})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${index})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
+
+    }
+    else{
+        btnViewTodoElement.setAttribute('name', 'caret-forward');
+        listTodoElement.innerHTML = '';
+    }
+})
+
+// Xem các task inprogress
+btnViewProgressElement.addEventListener('click', function(){
+    if(btnViewProgressElement.getAttribute('name') === 'caret-forward'){
+        btnViewProgressElement.setAttribute('name', 'caret-down');
+
+        const listProgress = tasks.filter(task => task.projectId === idProject && task.status === 'In Progress');
+
+        listProgressElement.innerHTML = listProgress.map((task, index) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${index})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${index})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
+    }
+    else{
+        btnViewProgressElement.setAttribute('name', 'caret-forward');
+        listProgressElement.innerHTML = ''
+    }
+})
+
+// xem các task pending
+btnViewPendingElement.addEventListener('click', function(){
+    if(btnViewPendingElement.getAttribute('name') === 'caret-forward'){
+        btnViewPendingElement.setAttribute('name', 'caret-down');
+
+        const listPending = tasks.filter(task => task.projectId === idProject && task.status === 'Pending');
+
+        listPendingElement.innerHTML = listPending.map((task, index) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${index})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${index})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
+    }
+    else{
+        btnViewPendingElement.setAttribute('name', 'caret-forward');
+        listPendingElement.innerHTML = ''
+    }
+})
+
+// xem các task done
+btnViewDoneElement.addEventListener('click', function(){
+    if(btnViewDoneElement.getAttribute('name') === 'caret-forward'){
+        btnViewDoneElement.setAttribute('name', 'caret-down');
+
+        const listDone = tasks.filter(task => task.projectId === idProject && task.status === 'Done');
+
+        listDoneElement.innerHTML = listDone.map((task, index) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${index})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${index})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
+    }
+    else{
+        btnViewDoneElement.setAttribute('name', 'caret-forward');
+        listDoneElement.innerHTML = ''
+    }
+})
 
 // Đăng xuất
 btnLogoutElement.addEventListener('click', function(){

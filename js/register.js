@@ -15,6 +15,13 @@ const alertConfirmPasswordElement = document.querySelector('#alert-confirm-passw
 //  Lấy dữ liệu các tài khoản đã đăng kí trên local storage
 const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
 
+// Chuyển hướng nếu đã đăng nhập
+const indexUser = localStorage.getItem('indexUser');
+
+if(indexUser !== null){
+    window.location.href = 'project-management.html';
+}
+
 // Lắng nghe sự kiện đăng kí tài khoản
 btnRegisterElement.addEventListener('click', function(event){
     event.preventDefault();
@@ -22,42 +29,58 @@ btnRegisterElement.addEventListener('click', function(event){
     // Kiểm tra input
     if(nameInputElement.value === ''){
         alertNameElement.textContent = 'Họ tên không được để trống';
+        nameInputElement.classList.add('wrong');
     }
     else if(!isValidateName(nameInputElement.value)){
         alertNameElement.textContent = 'Họ tên không hợp lệ';
+        nameInputElement.classList.add('wrong');
     }
     else{
         alertNameElement.textContent = '';
+        nameInputElement.classList.remove('wrong');
     }
 
     if(emailInputElement.value === ''){
         alertEmailElement.textContent = 'Email không được để trống';
+        emailInputElement.classList.add('wrong')
     }
     else if(!isValidateEmail(emailInputElement.value)){
         alertEmailElement.textContent = 'Email không hợp lệ';
+        emailInputElement.classList.add('wrong')
+    }
+    else if(accounts.some((account) => account.email === emailInputElement.value)){
+        alertEmailElement.textContent = 'Email đã tồn tại';
+        emailInputElement.classList.add('wrong')
     }
     else{
         alertEmailElement.textContent = '';
+        emailInputElement.classList.remove('wrong')
     }
 
     if(passwordInputElement.value === ''){
         alertPasswordElement.textContent = 'Mật khẩu không được để trống';
+        passwordInputElement.classList.add('wrong');
     }
     else if(!isValidatePassword(passwordInputElement.value)){
         alertPasswordElement.textContent = 'Mật khẩu không hợp lệ'
+        passwordInputElement.classList.add('wrong');
     }
     else{
         alertPasswordElement.textContent = '';
+        passwordInputElement.classList.remove('wrong');
     }
 
     if(confirmPasswordInputElement.value === ''){
         alertConfirmPasswordElement.textContent = 'Vui lòng nhập lại mật khẩu';
+        confirmPasswordInputElement.classList.add('wrong');
     }
     else if(confirmPasswordInputElement.value !== passwordInputElement.value){
         alertConfirmPasswordElement.textContent = 'Mật khẩu không trùng nhau';
+        confirmPasswordInputElement.classList.add('wrong');
     }
     else{
         alertConfirmPasswordElement.textContent = '';
+        confirmPasswordInputElement.classList.remove('wrong');
     }    
 
     // Tiến hành tạo tài khoản mới khi dữ liệu người dùng nhập hợp lệ
@@ -90,8 +113,7 @@ function isValidateName(name){
 //Validate email
 function isValidateEmail(email){
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const found = accounts.some((account) => account.email === email);
-    return(regex.test(email) && !found);
+    return regex.test(email)
 }
 
 // Validate mật khẩu
