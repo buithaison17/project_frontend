@@ -319,6 +319,9 @@ projectsElement.addEventListener('click', function(){
 inputSearchElement.addEventListener('input', function(event){
     const searchProject = myListProject.filter(project => project.projectName.toLowerCase().includes(event.target.value.trim().toLowerCase()));
     renderProject(searchProject);
+    if(inputSearchElement.value === ''){
+        renderButton(myListProject);
+    }
 })
 
 // Đăng xuất
