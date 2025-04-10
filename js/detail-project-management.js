@@ -207,6 +207,7 @@ function closeViewMember(){
     
     renderMember(projects);
     renderListMember(projects);
+    renderTask(tasks);
 }
 
 btnViewExitElement.addEventListener('click', closeViewMember);
@@ -308,39 +309,21 @@ btnSaveAddMemberElement.addEventListener('click', function(){
 })
 
 // Xóa thành viên
-let memberToRemoveIndex = null;
-
-function closeDeleteModal(){
-    modalDeleleElement.style.display = 'none';
-}    
-
 function removeMember(index){
-    modalDeleleElement.style.display = 'flex';
-    memberToRemoveIndex = index
-
-    btnExitDeleteElement.addEventListener('click', closeDeleteModal)
-    btnCloseDeleteElement.addEventListener('click', closeDeleteModal)
-
-    btnSaveDeleteElement.addEventListener('click', function(){
-        if(memberToRemoveIndex === null) return;
-        
-        tempTasks = JSON.parse(localStorage.getItem("tasks"));
-        const indexProject = projects.findIndex(project => project.id === idProject);
-        const idUserDelete = projects[indexProject].member[index].userId;
-        const taskDelete = tasks.filter(task => task.assigneeId === idUserDelete);
-        
-        for(let i = 0; i < taskDelete.length; i++){
-            const idTaskDelete = taskDelete[i].id;
-            const indexTaskDelete = tempTasks.findIndex(task => task.id === idTaskDelete);
-            tempTasks.splice(indexTaskDelete, 1);
-        }
-         
-        tempProjects = JSON.parse(localStorage.getItem('projects'));
-        tempProjects[indexProject].member.splice(index, 1);
-        renderMember(tempProjects);
-        renderListMember(tempProjects);
-        closeDeleteModal();
-    })
+    const indexProject = projects.findIndex(project => project.id === idProject);
+    tempProjects = JSON.parse(localStorage.getItem('projects'));
+    tempTasks = JSON.parse(localStorage.getItem('tasks'));
+    const idUserDelete = projects[indexProject].member[index].userId;
+    const taskDelete = tasks.filter(task => task.assigneeId === idUserDelete);    
+    tempProjects[indexProject].member.splice(index,1);
+    for(let i = 0; i < taskDelete.length; i++){
+        const idTaskDelete = taskDelete[i].id;
+        const indexTaskDelete = tempTasks.findIndex(task => task.id === idTaskDelete);
+        tempTasks.splice(indexTaskDelete, 1);
+    }
+    renderListMember(tempProjects);
+    renderMember(tempProjects);
+    renderTask(tempTasks);   
 }
 
 // Hiển thị menu thêm thành viên
@@ -468,6 +451,7 @@ function addTask(){
         }    
         tasks.push(newTask);
         localStorage.setItem('tasks', JSON.stringify(tasks));
+        renderTask(tasks);
         closeAddTaskModal();            
     }
 }
@@ -529,37 +513,29 @@ btnExitAddTaskElement.addEventListener('click', closeAddTaskModal);
 btnCloseAddTaskElement.addEventListener('click', closeAddTaskModal);
 
 // Render danh sách các nhiệm vụ
-function renderTask(event){
-    const target = event.target;
-    
-    if (target === btnViewTodoElement) {
-        if (btnViewTodoElement.getAttribute('name') === 'caret-forward') {
-            btnViewTodoElement.setAttribute('name', 'caret-down');
-            const listTodo = tasks.filter(task => task.projectId === idProject && task.status === 'To Do');
-            listTodoElement.innerHTML = listTodo.map((task) => {
-                const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
-                const fullNameMember = accounts[indexUser].fullName;
-                return `<tr>
-                                <td class="name-task border">${task.taskName}</td>
-                                <td class="person-in-charge border">${fullNameMember}</td>
-                                <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
-                                <td class="date border">${task.asignDate}</td>
-                                <td class="date border">${task.dueDate}</td>
-                                <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
-                                <td class="border btn">
-                                <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
-                                <span onclick = "removeTask(${task.id})" class="btn-remove">Xóa</span>
-                            </tr>`          
-            }).join("");
-        } else {
-            btnViewTodoElement.setAttribute('name', 'caret-forward');
-            listTodoElement.innerHTML = '';
-        }
+function renderTask(tasks){
+    if(btnViewTodoElement.getAttribute('name') === 'caret-down'){
+        btnViewTodoElement.setAttribute('name', 'caret-down');
+        const listTodo = tasks.filter(task => task.projectId === idProject && task.status === 'To Do');
+        listTodoElement.innerHTML = listTodo.map((task) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${task.id})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
     }
-    
-    if (target === btnViewProgressElement) {
-        if (btnViewProgressElement.getAttribute('name') === 'caret-forward') {
-            btnViewProgressElement.setAttribute('name', 'caret-down');
+
+    if(btnViewProgressElement.getAttribute('name') === 'caret-down'){
+        btnViewProgressElement.setAttribute('name', 'caret-down');
             const listProgress = tasks.filter(task => task.projectId === idProject && task.status === 'In Progress');
             listProgressElement.innerHTML = listProgress.map((task) => {
                 const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
@@ -575,75 +551,95 @@ function renderTask(event){
                                 <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
                                 <span onclick = "removeTask(${task.id})" class="btn-remove">Xóa</span>
                             </tr>`          
-            }).join("");
-        } else {
-            btnViewProgressElement.setAttribute('name', 'caret-forward');
-            listProgressElement.innerHTML = '';
-        }
+            }).join("");        
     }
 
-    if(target === btnViewPendingElement){
-        if(btnViewPendingElement.getAttribute('name') === 'caret-forward'){
-            btnViewPendingElement.setAttribute('name', 'caret-down');
-    
-            const listPending = tasks.filter(task => task.projectId === idProject && task.status === 'Pending');
-    
-            listPendingElement.innerHTML = listPending.map((task, index) => {
-                const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
-                const fullNameMember = accounts[indexUser].fullName;
-                return `<tr>
-                                <td class="name-task border">${task.taskName}</td>
-                                <td class="person-in-charge border">${fullNameMember}</td>
-                                <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
-                                <td class="date border">${task.asignDate}</td>
-                                <td class="date border">${task.dueDate}</td>
-                                <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
-                                <td class="border btn">
-                                <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
-                                <span onclick = "removeTask(${index})" class="btn-remove">Xóa</span>
-                            </tr>`          
-            }).join("");
-        }
-        else{
-            btnViewPendingElement.setAttribute('name', 'caret-forward');
-            listPendingElement.innerHTML = ''
-        }
+    if(btnViewPendingElement.getAttribute('name') === 'caret-down'){
+        const listPending = tasks.filter(task => task.projectId === idProject && task.status === 'Pending');
+        listPendingElement.innerHTML = listPending.map((task, index) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${index})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
     }
 
-    if(target === btnViewDoneElement){
-        if(btnViewDoneElement.getAttribute('name') === 'caret-forward'){
-            btnViewDoneElement.setAttribute('name', 'caret-down');
-    
-            const listDone = tasks.filter(task => task.projectId === idProject && task.status === 'Done');
-    
-            listDoneElement.innerHTML = listDone.map((task, index) => {
-                const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
-                const fullNameMember = accounts[indexUser].fullName;
-                return `<tr>
-                                <td class="name-task border">${task.taskName}</td>
-                                <td class="person-in-charge border">${fullNameMember}</td>
-                                <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
-                                <td class="date border">${task.asignDate}</td>
-                                <td class="date border">${task.dueDate}</td>
-                                <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
-                                <td class="border btn">
-                                <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
-                                <span onclick = "removeTask(${task.id})" class="btn-remove">Xóa</span>
-                            </tr>`          
-            }).join("");
-        }
-        else{
-            btnViewDoneElement.setAttribute('name', 'caret-forward');
-            listDoneElement.innerHTML = ''
-        }
+    if(btnViewDoneElement.getAttribute('name') === 'caret-down'){
+        const listDone = tasks.filter(task => task.projectId === idProject && task.status === 'Done');
+        listDoneElement.innerHTML = listDone.map((task, index) => {
+            const indexUser = accounts.findIndex(account => account.id === task.assigneeId);
+            const fullNameMember = accounts[indexUser].fullName;
+            return `<tr>
+                            <td class="name-task border">${task.taskName}</td>
+                            <td class="person-in-charge border">${fullNameMember}</td>
+                            <td class="border"><p class="${task.priority}">${task.priority === 'low' ? 'Thấp' : task.priority === 'medium' ? 'Trung bình' : 'Cao'}</p></td>
+                            <td class="date border">${task.asignDate}</td>
+                            <td class="date border">${task.dueDate}</td>
+                            <td class="border"><p class="${task.progress}">${task.progress === 'on-schedule' ? 'Đúng tiến độ' : task.progress === 'risk' ? 'Rủi ro cao' : 'Trễ hạn'}</p></td>
+                            <td class="border btn">
+                            <span onclick = "editTask(${task.id})" class="btn-edit">Sửa</span>
+                            <span onclick = "removeTask(${task.id})" class="btn-remove">Xóa</span>
+                        </tr>`          
+        }).join("");
     }
 }
 
-btnViewTodoElement.addEventListener('click', renderTask);
-btnViewProgressElement.addEventListener('click', renderTask);
-btnViewPendingElement.addEventListener('click', renderTask);
-btnViewDoneElement.addEventListener('click', renderTask);
+btnViewTodoElement.addEventListener('click', function(){
+    if(btnViewTodoElement.getAttribute('name') === 'caret-forward'){
+        btnViewTodoElement.setAttribute('name', 'caret-down');
+        renderTask(tasks);
+    }
+    else{
+        btnViewTodoElement.setAttribute('name', 'caret-forward');
+        listTodoElement.innerHTML = '';
+    }
+});
 
+btnViewProgressElement.addEventListener('click', function(){
+    if(btnViewProgressElement.getAttribute('name') === 'caret-forward'){
+        btnViewProgressElement.setAttribute('name', 'caret-down');
+        renderTask(tasks);
+    }
+    else{
+        btnViewProgressElement.setAttribute('name', 'caret-forward');
+        listProgressElement.innerHTML = '';
+    }
+});
+
+
+btnViewPendingElement.addEventListener('click', function(){
+    if(btnViewPendingElement.getAttribute('name') === 'caret-forward'){
+        btnViewPendingElement.setAttribute('name', 'caret-down');
+        renderTask(tasks);
+    }
+    else{
+        btnViewPendingElement.setAttribute('name', 'caret-forward');
+        listPendingElement.innerHTML = '';
+    }
+});
+
+
+btnViewDoneElement.addEventListener('click', function(){
+    if(btnViewDoneElement.getAttribute('name') === 'caret-forward'){
+        btnViewDoneElement.setAttribute('name', 'caret-down');
+        renderTask(tasks);
+    }
+    else{
+        btnViewDoneElement.setAttribute('name', 'caret-forward');
+        listDoneElement.innerHTML = '';
+    }
+});
+
+// Chỉnh sửa task
 function editTask(idTask){
     modalAddTaskElement.style.display = 'flex';
     const todayDate = new Date();
@@ -774,11 +770,18 @@ function editTask(idTask){
             localStorage.setItem('tasks', JSON.stringify(tasks));
             btnSaveAddTaskElement.removeEventListener('click', editHandler);
             btnSaveAddTaskElement.addEventListener('click', addTask);
+            renderTask(tasks);
             closeAddTaskModal();
         }
     }
 
     btnSaveAddTaskElement.addEventListener('click', editHandler);
+}
+
+// Xóa task
+function removeTask(idTask){
+    const indexTask = tasks.findIndex(task => task.id === idTask)
+
 }
 
 // Đăng xuất
