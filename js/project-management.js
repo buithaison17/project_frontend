@@ -8,6 +8,7 @@ indexUser = +indexUser;
 // Lấy dữ liệu có trong local storage
 const projects = JSON.parse(localStorage.getItem('projects')) || [];
 const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
 // Lấy ID người dùng đang đăng nhập
 const currentUserId = accounts[indexUser].id;
@@ -226,17 +227,28 @@ function removeProject(idProjectDelete){
 }
 
 btnRemoveConfirmModal.addEventListener('click', function(){
-    projects.splice(projectIndexToDelete, 1);
-    
     const myListProject = projects.filter(project => 
         project.member.some(member => member.userId === currentUserId && member.role === 'Project Owner')
     );
+    
+    // Xóa các task liên quan đến dự án này
+    const idProject = projects[projectIndexToDelete].id;
+    const taskOfProject = tasks.filter(task => task.projectId === idProject);
 
+    for(let i = 0; i < taskOfProject.length; i++){
+        const idTaskDelete = taskOfProject[i].id;
+        const indexTaskDelete = tasks.findIndex(task => task.id === idTaskDelete);
+        tasks.splice(indexTaskDelete, 1);
+    }
+    
+    projects.splice(projectIndexToDelete, 1);
+    
     if (myListProject.length % 4 === 0 && currentPage > 1) {
         currentPage--;
         }
-
+    
     localStorage.setItem('projects', JSON.stringify(projects));
+    localStorage.setItem('tasks', JSON.stringify(tasks));
     renderButton(projects);
     closeModalDelete();
 })

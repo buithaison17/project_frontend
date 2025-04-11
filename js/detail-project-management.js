@@ -351,7 +351,7 @@ function addTask(){
         alertNameTaskElement.textContent = 'Vui lòng nhập tên nhiệm vụ';
         check = false;
     }
-    else if(inputNameTaskElement.value.length <= 8){
+    else if(inputNameTaskElement.value.length < 8){
         inputNameTaskElement.classList.add('wrong');
         alertNameTaskElement.textContent = 'Tên nhiệm vụ phải có ít nhất 8 kí tự';
         check = false
@@ -808,18 +808,17 @@ searchTaskElement.addEventListener('input', function(event){
     const taskOfProject = tasks.filter(task => task.projectId === idProject);
     const searchTask = taskOfProject.filter(task => task.taskName.toLowerCase().includes(event.target.value.trim().toLowerCase()));
     renderTask(searchTask);
-    
 })
 
 // Sắp xếp theo hạn chót và độ ưu tiên
 arrangeTaskElement.addEventListener('click', function(){
     tempTasks = JSON.parse(localStorage.getItem('tasks'));
+    
     if(arrangeTaskElement.value === 'dueDate'){
         tempTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
         renderTask(tempTasks);
     }
-    
-    if(arrangeTaskElement.value === 'priority'){
+    else if(arrangeTaskElement.value === 'priority'){
         const priorityMap = {
             "low": 1,
             "medium": 2,
@@ -832,9 +831,6 @@ arrangeTaskElement.addEventListener('click', function(){
     else{
         renderTask(tasks);
     }
-
-    // if()
-    
 })
 
 // Đăng xuất
