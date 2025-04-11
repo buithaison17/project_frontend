@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/task-user.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-container">
+                <div class="header-left hover">Quản Lí Dự Án</div>
+                <div class="header-right">
+                    <div id="projects" class="projects">Dự Án</div>
+                    <div id="my-task" class="my-task">Nhiệm Vụ của tôi</div>
+                    <div id="logout" class="logout">Đăng Xuất</div>
+                </div>
+            </div>
+        </header>
+        <p class="title">Quản lí nhiệm vụ</p>
+        <article class="sort-and-search">
+            <select id="sort" class="input">
+                <option value="" selected>Sắp xếp theo</option>
+                <option value="" selected>Sắp xếp theo</option>
+                <option value="" selected>Sắp xếp theo</option>
+            </select>
+            <input type="search" id="search" class="input search" placeholder="Tìm kiếm nhiệm vụ">
+        </article>
+        <article class="list-task-container">
+            <h3>Danh Sách Nhiệm Vụ</h3>
+            <table>
+                <thead>
+                    <tr class="table-title">
+                        <th class="border">Tên nhiệm vụ</th>
+                        <th class="border">Độ ưu tiên</th>
+                        <th class="border">Trạng thái</th>
+                        <th class="border">Ngày bắt đầu</th>
+                        <th class="border">Hạn chót</th>
+                        <th class="border">Tiến độ</th>
+                    </tr>
+                </thead>
+                <tbody id="list-project">
+                    <tr class="project-row">
+                        <td colspan="6">
+                        <div class="project-infor">
+                            <ion-icon name="caret-forward"></ion-icon>
+                            <p class="name-project">sơn bùi</p>
+                        </div>
+                        </td>
+                    </tr>
+                    <tr class="task-item">
+                        <td class="border">Soạn thảo đề cương</td>
+                        <td class="border"><p class="low">Thấp</p></td>
+                        <td class="border">To Do</td>
+                        <td class="border">2024-02-24</td>
+                        <td class="border">2024-02-27</td>
+                        <td class="border">Đúng tiến độ</td>
+                    </tr>
+                    <tr class="project-row">
+                        <td colspan="6">
+                        <div class="project-infor">
+                            <ion-icon name="caret-forward"></ion-icon>
+                            <p class="name-project">sơn bùi</p>
+                        </div>
+                        </td>
+                    </tr>
+                    <tr class="task-item">
+                        <td class="border">Soạn thảo đề cương</td>
+                        <td class="border"><p class="low">Thấp</p></td>
+                        <td class="border">To Do</td>
+                        <td class="border">2024-02-24</td>
+                        <td class="border">2024-02-27</td>
+                        <td class="border">Đúng tiến độ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+        <footer>&copy; 2025 Team management. All rights reverved.</footer>
+    </div>
+    <script src="../js/task-user.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
