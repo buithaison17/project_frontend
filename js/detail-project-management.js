@@ -26,15 +26,6 @@ const projectsElement = document.querySelector("#projects");
 const myTaskElement = document.querySelector("#my-task");
 const btnLogoutElement = document.querySelector("#logout");
 
-// Lấy các phần tử thêm và sửa nhiệm vụ
-const btnAddTaskElement = document.querySelector("#btn-add-task");
-const nameTaskInputElement = document.querySelector("#name-task-input");
-const personInChargeInputElement = document.querySelector("#person-in-charge-input");
-const statusInputElement = document.querySelector("#status-input");
-const onDateInputElement = document.querySelector("#on-date-input");
-const priorityInputElement = document.querySelector("#priority-input");
-const progressInputElement = document.querySelector("#progress-input");
-
 // Lấy các phần tử thêm thành viên
 const modalAddMemberElement = document.querySelector("#modal-add-member");
 const btnAddMemberElement = document.querySelector("#btn-add-member");
@@ -63,6 +54,7 @@ const btnCloseDeleteElement = document.querySelector("#btn-remove-cancel");
 const btnSaveDeleteElement = document.querySelector("#btn-remove-confirm");
 
 // Lấy modal thêm nhiệm vụ
+const btnAddTaskElement = document.querySelector("#btn-add-task");
 const modalAddTaskElement = document.querySelector("#modal-add-task");
 const btnExitAddTaskElement = document.querySelector("#close-add-modal");
 const btnCloseAddTaskElement = document.querySelector("#btn-add-close");
@@ -94,6 +86,12 @@ const listDoneElement = document.querySelector('[data-category="done"]');
 
 // Để lưu hàm xử lý sửa nhiệm vụ
 let editHandler = null; 
+
+// Lấy phần tử tìm kiếm
+const searchTaskElement = document.querySelector("#search-task");
+
+// Lấy phần tử sắp xếp task
+const arrangeTaskElement = document.querySelector("#arrange-task");
 
 // Lưu trữ mảng tạm thời
 let tempProjects = [];
@@ -187,7 +185,8 @@ function changeMemberRole(index, role){
     const indexProject = tempProjects.findIndex(project => project.id === idProject);
     const currentRole = tempProjects[indexProject].member[index].role;
     tempProjects[indexProject].member[index].role = role;
-    
+    tempTasks = JSON.parse(localStorage.getItem('tasks'));
+
     if(!tempProjects[indexProject].member.some(member => member.role === 'Project Owner')){
         alertChangeRoleMember.textContent = 'Dự án không thể thiếu Project Owner';
         tempProjects[indexProject].member[index].role = currentRole;
@@ -506,6 +505,11 @@ function closeAddTaskModal(){
     inputProgressElement.classList.remove('wrong');
     alertProgressElement.textContent = '';
 
+    if(editHandler){
+        btnSaveAddTaskElement.removeEventListener('click', editHandler);
+        btnSaveAddTaskElement.addEventListener('click', addTask);
+    }
+
     editHandler = null;
 }
 
@@ -647,6 +651,7 @@ function editTask(idTask){
     const indexTask = tasks.findIndex(task => task.id === idTask);
     inputNameTaskElement.value = tasks[indexTask].taskName
     const taskOfProject = tasks.filter(task => task.projectId === idProject);
+    btnSaveAddTaskElement.removeEventListener('click',addTask);
 
     let htmls = `<option value="">Chọn người phụ trách</option>`
     const indexProject = projects.findIndex(project => project.id === idProject);
@@ -666,7 +671,6 @@ function editTask(idTask){
 
     editHandler = function (){
         let check = true;
-        btnSaveAddTaskElement.removeEventListener('click',addTask);
 
         if(inputNameTaskElement.value.trim() === ''){
             alertNameTaskElement.textContent = 'Tên dự án không được để trống';
@@ -779,10 +783,59 @@ function editTask(idTask){
 }
 
 // Xóa task
-function removeTask(idTask){
-    const indexTask = tasks.findIndex(task => task.id === idTask)
-
+let indexDeleteTask = null;
+function closeDeleteModal(){
+    modalDeleleElement.style.display = 'none';
+    indexDeleteTask = null;
 }
+
+function removeTask(idTask){
+    modalDeleleElement.style.display = 'flex';
+    indexDeleteTask = tasks.findIndex(task => task.id === idTask);
+    btnExitDeleteElement.addEventListener('click', closeDeleteModal);
+    btnCloseDeleteElement.addEventListener('click', closeDeleteModal);
+}
+
+btnSaveDeleteElement.addEventListener('click', function(){
+    tasks.splice(indexDeleteTask, 1);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    renderTask(tasks);
+    closeDeleteModal();
+})
+
+// Tìm kiếm nhiệm vụ
+searchTaskElement.addEventListener('input', function(event){
+    const taskOfProject = tasks.filter(task => task.projectId === idProject);
+    const searchTask = taskOfProject.filter(task => task.taskName.toLowerCase().includes(event.target.value.trim().toLowerCase()));
+    renderTask(searchTask);
+    
+})
+
+// Sắp xếp theo hạn chót và độ ưu tiên
+arrangeTaskElement.addEventListener('click', function(){
+    tempTasks = JSON.parse(localStorage.getItem('tasks'));
+    if(arrangeTaskElement.value === 'dueDate'){
+        tempTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        renderTask(tempTasks);
+    }
+    
+    if(arrangeTaskElement.value === 'priority'){
+        const priorityMap = {
+            "low": 1,
+            "medium": 2,
+            "high": 3
+        };
+
+        tempTasks.sort((a, b) => priorityMap[a.priority] - priorityMap[b.priority]);
+        renderTask(tempTasks);
+    }
+    else{
+        renderTask(tasks);
+    }
+
+    // if()
+    
+})
 
 // Đăng xuất
 btnLogoutElement.addEventListener('click', function(){
