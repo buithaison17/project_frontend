@@ -31,9 +31,25 @@ const idUser = accounts[indexUser].id;
 const myListProject = projects.filter(project => project.member.some(member => member.userId === idUser));
 
 // Render Project và nhiệm vụ của người dùng
+function renderProjectAndTask(){
+    let htmls += myListProject.map(project => {
+        const myTask = tasks.filter(task => task.assigneeId === project.id);
+        if(myTask.length !== 0){
+            return `<tr class="project-row">
+                            <td colspan="6">
+                            <div class="project-infor">
+                                <ion-icon name="caret-forward"></ion-icon>
+                                <p class="name-project">sơn bùi</p>
+                            </div>
+                            </td>
+                        </tr>`
+        }
+    }).join('');
 
+    listProjectElement.innerHTML = htmls;
+}
 
-
+renderProjectAndTask();
 // Quay lại trang dự án
 projectsElement.addEventListener('click', function(){
     window.location.href = 'project-management.html';
